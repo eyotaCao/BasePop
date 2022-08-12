@@ -2,7 +2,8 @@ package com.example.basepop.basepop.base.photoViewer;
 
 import android.app.Activity;
 
-import com.okk.myapplication.R;
+import com.example.basepop.R;
+
 
 public class ImageDialog extends BasePopImage{
 
