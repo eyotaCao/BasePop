@@ -13,6 +13,7 @@ android {
         consumerProguardFiles "consumer-rules.pro"
     }
 
+
     buildTypes {
         release {
             minifyEnabled false
@@ -24,6 +25,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+
+
 
 dependencies {
 
