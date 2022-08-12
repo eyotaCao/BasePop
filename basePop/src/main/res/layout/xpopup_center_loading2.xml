@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:background="@drawable/load_bg"
+        android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+        <com.example.basepop.basepop.base.utils.LoadCircleView
+            android:id="@+id/tv_load"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </com.example.basepop.basepop.base.utils.LoadCircleView>
+
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_gravity="center_vertical"
+            android:textSize="14sp"
+            android:textColor="@color/colorFFFFFF"
+            android:text=""
+            android:visibility="gone"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+</LinearLayout>
+
+</LinearLayout>
+
