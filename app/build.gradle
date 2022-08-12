@@ -45,6 +45,5 @@ dependencies {
 //    implementation(libsDirectory.file("base"))
     //https://github.com/ccmw123/BasePop.git
 
-    implementation 'com.github.ccmw123:BasePop:1.0.0'
 
 }
