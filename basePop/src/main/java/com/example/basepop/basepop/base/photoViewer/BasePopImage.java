@@ -62,6 +62,8 @@ public abstract class BasePopImage extends BasePop {
     private final boolean isZeroDuration = false;
     private boolean isClickThrough=false;
 
+    private LoadImage loadImage;
+
     protected int shadowBgColor = Color.rgb(32, 36, 46);
     private MyPopLis myPopLis;
 
@@ -101,15 +103,19 @@ public abstract class BasePopImage extends BasePop {
         mContent= LayoutInflater.from(activity).inflate(layout,mBase,false);
       //  mContent.setBackgroundColor(getResources().getColor(R.color.color2866FE));
         mContainer=new PhotoViewContainer(activity);
-        setPhoto(mContent.findViewById(R.layout.dialog_image));
+        setPhoto(mContent.findViewById(R.id.dialog_image_photo));
         if (mPhoto!=null){
             if (srcView !=null){
                 mPhoto.setImageDrawable(srcView.getDrawable());
                 //initParam();
             }
-            Glide.with(activity).load(url).into(mPhoto);
+            if (loadImage!=null){
+                loadImage.onLoad(mPhoto);
+            }else {
+                Glide.with(activity).load(url).into(mPhoto);
+            }
             mPhoto.setOnViewTapListener((view, x, y) -> dismiss());
-            mContainer.setViewPager((LinearLayout) mContent);
+            mContainer.setContent((LinearLayout) mContent);
             mContainer.setOnDragChangeListener(new PhotoViewContainer.OnDragChangeListener() {
                 @Override
                 public void onRelease() {
@@ -284,6 +290,7 @@ public abstract class BasePopImage extends BasePop {
         this.mPhoto = mPhoto;
     }
 
+    //设置图片路径 (网络图片)
     public BasePopImage setUrl(String url) {
         this.url = url;
         return this;
@@ -366,6 +373,14 @@ public abstract class BasePopImage extends BasePop {
         return this;
     }
 
+    public interface LoadImage{
+        void onLoad(ImageView view);
+    }
+    //可自定义加载大图方式
+    public BasePopImage setLoadImage(LoadImage loadImage) {
+        this.loadImage = loadImage;
+        return this;
+    }
 
     protected int getMaxWidth(){return 0;}
 

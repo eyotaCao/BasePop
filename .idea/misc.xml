@@ -4,8 +4,15 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/cwj/.gradle/caches/transforms-3/ef37064c001562f6fa5431cdf7a0cf4d/transformed/jetified-BasePop-1.0.1/res/drawable/load_bg.xml" value="0.142" />
+        <entry key="..\:/Users/cwj/AndroidStudioProjects/CwjModels/app/src/main/res/drawable/drawable.xml" value="0.142" />
+        <entry key="..\:/Users/cwj/AndroidStudioProjects/CwjModels/app/src/main/res/drawable/radius_six_blue_bg2.xml" value="0.142" />
         <entry key="..\:/Users/cwj/AndroidStudioProjects/CwjModels/app/src/main/res/layout/activity_main.xml" value="0.2754782700075322" />
         <entry key="..\:/Users/cwj/AndroidStudioProjects/CwjModels/app/src/main/res/layout/content_main.xml" value="0.2942708333333333" />
+        <entry key="..\:/Users/cwj/AndroidStudioProjects/CwjModels/app/src/main/res/layout/dialog_attch.xml" value="0.2942708333333333" />
+        <entry key="..\:/Users/cwj/AndroidStudioProjects/CwjModels/app/src/main/res/layout/dialog_bottom.xml" value="0.2942708333333333" />
+        <entry key="..\:/Users/cwj/AndroidStudioProjects/CwjModels/app/src/main/res/layout/dialog_center_edit.xml" value="0.2942708333333333" />
+        <entry key="..\:/Users/cwj/AndroidStudioProjects/CwjModels/app/src/main/res/layout/dialog_center_normal.xml" value="0.18365218000502148" />
+        <entry key="..\:/Users/cwj/AndroidStudioProjects/CwjModels/app/src/main/res/layout/dialog_top_attch.xml" value="0.2942708333333333" />
         <entry key="..\:/Users/cwj/AndroidStudioProjects/CwjModels/app/src/main/res/menu/menu_main.xml" value="0.2942708333333333" />
         <entry key="..\:/Users/cwj/AndroidStudioProjects/CwjModels/basePop/src/main/res/drawable/load_bg.xml" value="0.142" />
         <entry key="..\:/Users/cwj/AndroidStudioProjects/CwjModels/basePop/src/main/res/drawable/sfdf.xml" value="0.142" />

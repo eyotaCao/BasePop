@@ -20,7 +20,7 @@ import androidx.customview.widget.ViewDragHelper;
 public class PhotoViewContainer extends FrameLayout {
     private static final String TAG = "PhotoViewContainer";
     private ViewDragHelper dragHelper;
-    public LinearLayout viewPager;
+    public LinearLayout content;
     private int HideTopThreshold = 80;
     private int maxOffset,maxOffsetX;
     private float dx,dy;
@@ -43,14 +43,8 @@ public class PhotoViewContainer extends FrameLayout {
         setBackgroundColor(Color.TRANSPARENT);
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        viewPager = (LinearLayout) getChildAt(0);
-    }
-
-    public void setViewPager(LinearLayout viewPager) {
-        this.viewPager = viewPager;
+    public void setContent(LinearLayout content) {
+        this.content = content;
     }
 
     @Override
@@ -75,7 +69,7 @@ public class PhotoViewContainer extends FrameLayout {
                 case MotionEvent.ACTION_MOVE:
                     dx = ev.getX() - touchX;
                     dy = ev.getY() - touchY;
-                    viewPager.dispatchTouchEvent(ev);
+                    content.dispatchTouchEvent(ev);
                     isVertical = (Math.abs(dy) > Math.abs(dx));
                     isHor = (Math.abs(dy) < Math.abs(dx));
                     touchX = ev.getX();
@@ -106,7 +100,7 @@ public class PhotoViewContainer extends FrameLayout {
     }
 
     private PhotoView getCurrentPhotoView(){
-        return  (PhotoView) viewPager.getChildAt(0);
+        return  (PhotoView) content.getChildAt(0);
     }
 
     @Override
@@ -114,12 +108,12 @@ public class PhotoViewContainer extends FrameLayout {
         boolean result = dragHelper.shouldInterceptTouchEvent(ev);
         if (ev.getPointerCount() > 1 && ev.getAction()==MotionEvent.ACTION_MOVE) return false;
         if (isTopOrBottomEnd()  && isVertical)return true;
-    //    if (getCurrentPhotoView().attacher.getScale()==1&&isHor)return true;
-        return result && isVertical;
+        return isVertical;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        System.out.println("adsadecent"+ev.getAction());
         if (ev.getPointerCount() > 1 ) return false;
         try {
             dragHelper.processTouchEvent(ev);
@@ -140,7 +134,7 @@ public class PhotoViewContainer extends FrameLayout {
 
         @Override
         public int clampViewPositionVertical(@NonNull View child, int top, int dy) {
-            int t = viewPager.getTop() + dy / 2;
+            int t = content.getTop() + dy / 2;
             if (t >= 0) {
                 return Math.min(t, maxOffset);
             } else {
@@ -150,7 +144,7 @@ public class PhotoViewContainer extends FrameLayout {
 
         @Override
         public int clampViewPositionHorizontal(@NonNull View child, int left, int dx) {
-            int t = viewPager.getLeft() + dx / 2;
+            int t = content.getLeft() + dx / 2;
             if (t >= 0) {
                 return Math.min(t, maxOffsetX);
             } else {
@@ -178,7 +172,7 @@ public class PhotoViewContainer extends FrameLayout {
             if (Math.abs(releasedChild.getTop()) > HideTopThreshold) {
                 if (dragChangeListener != null) dragChangeListener.onRelease();
             } else {
-                dragHelper.smoothSlideViewTo(viewPager, 0, 0);
+                dragHelper.smoothSlideViewTo(content, 0, 0);
                 dragHelper.smoothSlideViewTo(releasedChild, 0, 0);
                 ViewCompat.postInvalidateOnAnimation(PhotoViewContainer.this);
             }

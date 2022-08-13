@@ -257,7 +257,7 @@ public abstract class BasePopCenter2 extends BasePop{
         }
     }
 
-    public void showB(){
+    public void show(){
 
         if (isShowing||isShow){
             if (isShow){

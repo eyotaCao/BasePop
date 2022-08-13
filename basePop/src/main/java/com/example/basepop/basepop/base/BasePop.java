@@ -18,9 +18,6 @@ public abstract class BasePop {
         }
     }
 
-    protected abstract void beforeShow();
-    protected abstract void beforeDismiss();
-    protected abstract void onDismiss();
     protected abstract int getImplLayoutId();
 
     public static class MyPopLis{

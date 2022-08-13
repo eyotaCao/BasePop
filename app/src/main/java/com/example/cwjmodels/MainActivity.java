@@ -2,18 +2,20 @@ package com.example.cwjmodels;
 
 import android.os.Bundle;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.example.basepop.basepop.base.photoViewer.BasePopImage;
+import com.example.basepop.basepop.base.photoViewer.ImageDialog;
+import com.example.cwjmodels.dialogs.Attach;
+import com.example.cwjmodels.dialogs.Bottom;
+import com.example.cwjmodels.dialogs.Center;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.View;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.example.cwjmodels.databinding.ActivityMainBinding;
+import com.example.cwjmodels.dialogs.CenterBottom;
+import com.example.cwjmodels.dialogs.CenterEdit;
+import com.example.cwjmodels.dialogs.Top;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,23 +31,41 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.toolbar);
         binding.popCenter.setOnClickListener(view->{
-
+            Center center=new Center(this);
+            center.show();
         });
 
-      /*  NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        binding.popCenter2.setOnClickListener(view -> {
+            CenterBottom centerBottom=new CenterBottom(this);
+            centerBottom.show();
+        });
+        binding.popCenter3.setOnClickListener(view -> {
+            Bottom bottom=new Bottom(this);
+            bottom.show();
+        });
+        binding.popCenter4.setOnClickListener(view -> {
+            Top attachTop=new Top(this);
+            attachTop.atView(binding.toolbar).show();
+        });
+        binding.popCenter5.setOnClickListener(view -> {
+            Attach attach=new Attach(this);
+            attach.setAttachView(binding.popCenter5).show();
+        });
 
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+        binding.popCenter6.setOnClickListener(view -> {
+            CenterEdit centerEdit=new CenterEdit(this);
+            centerEdit.setAutoEdit(true).show();
+        });
+
+        binding.popCenter7.setOnClickListener(view -> {
+            ImageDialog imageDialog=new ImageDialog(this);
+            imageDialog.setSrcView(binding.popCenter7).setLoadImage(view1 -> {
+                view1.setImageResource(R.mipmap.ic_launcher);
+            }).show();
+        });
+
     }
 
     @Override
@@ -53,20 +73,5 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
