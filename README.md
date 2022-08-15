@@ -58,7 +58,7 @@ https://www.pgyer.com/Mgqc
 
 # 二、使用示例：
 ## 1、中心弹窗
-### 1、继承基类
+### 1.1、继承基类
 ```
 import android.app.Activity;
 import androidx.annotation.NonNull;
@@ -82,13 +82,13 @@ public class Center extends BasePopCenter2 {
     }
 }
 ```
-   2、在activity中使用
+### 1.2、在activity中使用
 ```
 Center center=new Center(this);
 center.show();
 ```
 ## 2、图片弹窗
-### 1、直接使用
+### 2.1、直接使用
 ```
 ImageDialog imageDialog=new ImageDialog(this);
 //1：自定义图片加载
