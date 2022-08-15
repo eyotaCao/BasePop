@@ -86,10 +86,13 @@ center.show();
 ### 1、直接使用
 ```
 ImageDialog imageDialog=new ImageDialog(this);
+//1：自定义图片加载
 imageDialog.setSrcView(binding.popCenter7)
 .setLoadImage(view1 -> {
      view1.setImageResource(R.mipmap.ic_launcher);
 }).show();
+//2：默认图片加载（使用Glide获取网络图片）
+imageDialog.setSrcView(binding.popCenter7).setUrl("...").show();
 ```
 #
 更多使用可以查看本项目app文件中mainactivity的使用示例。
