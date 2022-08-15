@@ -44,8 +44,11 @@ center.show();
 ###
 1、直接使用
 ```
-     ImageDialog imageDialog=new ImageDialog(this);
-            imageDialog.setSrcView(binding.popCenter7).setLoadImage(view1 -> {
-                view1.setImageResource(R.mipmap.ic_launcher);
-            }).show();
+ImageDialog imageDialog=new ImageDialog(this);
+imageDialog.setSrcView(binding.popCenter7)
+.setLoadImage(view1 -> {
+     view1.setImageResource(R.mipmap.ic_launcher);
+}).show();
 ```
+#
+更多使用可以查看本项目app文件中mainactivity的使用示例。
