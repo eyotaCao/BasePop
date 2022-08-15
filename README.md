@@ -47,6 +47,8 @@ implementation 'com.github.Ablexq:HttpHelper:1.0.3'
 
     //设置x轴偏移量
     public BasePopAttach setOffsetX(int offsetX)
+    
+    ...
 ```
 
 # 使用示例：
