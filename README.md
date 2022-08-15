@@ -6,9 +6,9 @@
 implementation 'com.github.EyoutaCao:BasePop:1.0.3'
 ```
 
-优点:提升性能；基于view利于更改，可以完全自定义样式；全面屏手势下可以全屏展示，沉浸感更好；修复了xpopup的一些展示问题。
+优点:提升性能；基于view利于更改，可以完全自定义样式；全面屏手势下可以全屏展示，沉浸感更好；修复了xpopup的一些展示问题，原生dialog在全面屏手势下会出现导航栏不显示的情况，basePop可以全屏展示。
 
-缺点：不基于dialog，不拥有安卓dialog某些特性，比如弹窗显示acrivity停止渲染。安卓目前dialog在全面屏手势下会出现导航栏不显示的情况，如果需要基于dialog可以自行更改。
+缺点：不基于dialog，不具有安卓dialog某些特性，比如弹窗显示acrivity停止渲染。但如果需要基于dialog可以自行更改。
 
 demo app可以下载体验:
 ```
