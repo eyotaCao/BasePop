@@ -9,12 +9,43 @@
 使用示例：
 ##
 1、中心弹窗
+###
+1、继承基类
 ```
+import android.app.Activity;
+import androidx.annotation.NonNull;
+import com.example.basepop.basepop.base.BasePopCenter2;
+import com.example.cwjmodels.R;
 
+public class Center extends BasePopCenter2 {
+    public Center(@NonNull Activity context) {
+        super(context);
+    }
+
+    @Override
+    protected void onCreate() {
+        super.onCreate();
+
+    }
+
+    @Override
+    protected int getImplLayoutId() {
+        return R.layout.dialog_center_normal;
+    }
+}
 ```
-
+2、在activity中使用
+```
+Center center=new Center(this);
+center.show();
+```
 ##
 2、图片弹窗
+###
+1、直接使用
 ```
-
+     ImageDialog imageDialog=new ImageDialog(this);
+            imageDialog.setSrcView(binding.popCenter7).setLoadImage(view1 -> {
+                view1.setImageResource(R.mipmap.ic_launcher);
+            }).show();
 ```
