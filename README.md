@@ -10,6 +10,11 @@ implementation 'com.github.Ablexq:HttpHelper:1.0.3'
 
 缺点：不基于dialog，不拥有安卓dialog某些特性，比如弹窗显示acrivity停止渲染。安卓目前dialog在全面屏手势下会出现导航栏不显示的情况，如果需要基于dialog可以自行更改。
 
+demo app可以下载体验:
+```
+https://www.pgyer.com/Mgqc
+```
+
 ## 一些方法:
 ```
     //开启弹窗
