@@ -21,7 +21,7 @@ implementation 'com.github.Ablexq:HttpHelper:1.0.3'
     //设置弹窗监听回调
     public BasePopAttach setPopListener(MyPopLis myPopLis)
     
-    //依附弹窗需设置依附的在activity上的view
+    //顶部依附弹窗需设置依附的在activity上的view
     public BasePopTop atView(View view)
     
     //设置没有阴影的背景点击可穿透
@@ -38,6 +38,15 @@ implementation 'com.github.Ablexq:HttpHelper:1.0.3'
     
     //设置内容居中
     public BasePopTop setContentCenter(boolean contentCenter) 
+    
+    //依附弹窗设置依附的view
+    public BasePopAttach setAttachView(View mAttachView) 
+    
+    //依附弹窗设置开启动画样式
+    public BasePopAttach setAnimType(Animate animType)
+
+    //设置x轴偏移量
+    public BasePopAttach setOffsetX(int offsetX)
 ```
 
 # 使用示例：
