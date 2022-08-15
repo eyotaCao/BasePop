@@ -96,3 +96,4 @@ imageDialog.setSrcView(binding.popCenter7).setUrl("...").show();
 ```
 #
 更多使用可以查看本项目app文件中mainactivity的使用示例。
+有问题可直接qq交流：957652774
