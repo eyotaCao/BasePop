@@ -10,6 +10,22 @@ implementation 'com.github.Ablexq:HttpHelper:1.0.3'
 
 缺点：不基于dialog，不拥有安卓dialog某些特性，比如弹窗显示acrivity停止渲染。安卓目前dialog在全面屏手势下会出现导航栏不显示的情况，如果需要基于dialog可以自行更改。
 
+## 一些方法:
+```
+ //设置没有阴影的背景点击可穿透
+    public BasePopTop setClickThrough(boolean clickThrough)
+
+    //仅在顶部弹窗模式且依附view会移动的情况下设置true
+    public BasePopTop setMove(boolean move)
+    //设置弹窗最大高度
+    public BasePopTop setMaxHeight(int max)
+    
+    //设置弹窗是否可拖拽
+    public BasePopTop setConScrollAble(boolean conScrollAble)
+    
+    //设置内容居中
+    public BasePopTop setContentCenter(boolean contentCenter) 
+```
 
 # 使用示例：
 ## 1、中心弹窗
