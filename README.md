@@ -53,6 +53,8 @@ https://www.pgyer.com/Mgqc
     //设置x轴偏移量
     public BasePopAttach setOffsetX(int offsetX)
     
+    //设置编辑框自动弹起
+    public BasePopBottom setAutoEdit(boolean autoEdit)
     ...
 ```
 
