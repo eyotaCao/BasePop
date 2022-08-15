@@ -10,7 +10,7 @@
 ##
 1、中心弹窗
 ###
-1、继承基类
+   1、继承基类
 ```
 import android.app.Activity;
 import androidx.annotation.NonNull;
@@ -34,7 +34,7 @@ public class Center extends BasePopCenter2 {
     }
 }
 ```
-2、在activity中使用
+   2、在activity中使用
 ```
 Center center=new Center(this);
 center.show();
@@ -42,7 +42,7 @@ center.show();
 ##
 2、图片弹窗
 ###
-1、直接使用
+   1、直接使用
 ```
 ImageDialog imageDialog=new ImageDialog(this);
 imageDialog.setSrcView(binding.popCenter7)
