@@ -6,11 +6,9 @@
 
 缺点：不基于dialog，不拥有安卓dialog某些特性，比如弹窗显示acrivity停止渲染，但经过对比性能相差不大，而且dialog会出现导航栏不显示的情况，如果需要基于dialog可以自行更改。
 #
-使用示例：
-##
-1、中心弹窗
-###
-   1、继承基类
+# 使用示例：
+## 1、中心弹窗
+### 1、继承基类
 ```
 import android.app.Activity;
 import androidx.annotation.NonNull;
@@ -39,10 +37,8 @@ public class Center extends BasePopCenter2 {
 Center center=new Center(this);
 center.show();
 ```
-##
-2、图片弹窗
-###
-   1、直接使用
+## 2、图片弹窗
+### 1、直接使用
 ```
 ImageDialog imageDialog=new ImageDialog(this);
 imageDialog.setSrcView(binding.popCenter7)
