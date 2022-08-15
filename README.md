@@ -12,11 +12,24 @@ implementation 'com.github.Ablexq:HttpHelper:1.0.3'
 
 ## 一些方法:
 ```
- //设置没有阴影的背景点击可穿透
+    //开启弹窗
+    public void show()
+    
+    //关闭弹窗
+    public void disminss()
+    
+    //设置弹窗监听回调
+    public BasePopAttach setPopListener(MyPopLis myPopLis)
+    
+    //依附弹窗需设置依附的在activity上的view
+    public BasePopTop atView(View view)
+    
+    //设置没有阴影的背景点击可穿透
     public BasePopTop setClickThrough(boolean clickThrough)
 
     //仅在顶部弹窗模式且依附view会移动的情况下设置true
     public BasePopTop setMove(boolean move)
+    
     //设置弹窗最大高度
     public BasePopTop setMaxHeight(int max)
     
