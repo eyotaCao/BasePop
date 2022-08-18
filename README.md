@@ -10,10 +10,8 @@ implementation 'com.github.EyoutaCao:BasePop:1.0.3'
 
 缺点：不基于dialog，不具有安卓dialog某些特性，比如弹窗显示acrivity停止渲染。但如果需要基于dialog可以自行更改。
 
-demo app可以下载体验: [link](da)
-```
-https://www.pgyer.com/Mgqc
-```
+demo app可以下载体验: [demo](https://www.pgyer.com/Mgqc)
+
 
 ## 一些方法:
 ```
