@@ -99,6 +99,16 @@ imageDialog.setSrcView(binding.popCenter7)
 //2：默认图片加载（使用Glide获取网络图片）
 imageDialog.setSrcView(binding.popCenter7).setUrl("...").show();
 ```
+## 3、其他弹窗
+### 3.1、类名
+```
+1、中心弹框 从底部弹出：BasepopCenter
+1、依附于某个view弹窗：BasePopAttach
+1、底部弹框 有输入框自动弹起：BasePopBottom
+1、中心弹框  中心弹出动画：BasePopCenter2
+1、中心弹框  中心弹出动画 有编辑框自动弹起 从底部弹出：BasePopCenterEdit
+1、头部弹框：BasePopTop
+```
 #
 更多使用可以查看本项目app文件中mainactivity的使用示例。
 有问题可直接qq交流：957652774
