@@ -118,7 +118,7 @@ public class PxTool {
         int [] wh=new int[2];
         ViewGroup mParent =(ViewGroup) activity.getWindow().getDecorView();
         wh[0]=mParent.getMeasuredWidth();
-        wh[1]=mParent.getMeasuredWidth();
+        wh[1]=mParent.getMeasuredHeight();
         return wh;
     }
 

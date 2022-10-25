@@ -6,6 +6,7 @@ import com.example.basepop.basepop.base.photoViewer.BasePopImage;
 import com.example.basepop.basepop.base.photoViewer.ImageDialog;
 import com.example.cwjmodels.dialogs.Attach;
 import com.example.cwjmodels.dialogs.Bottom;
+import com.example.cwjmodels.dialogs.Bottom2;
 import com.example.cwjmodels.dialogs.Center;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
             imageDialog.setSrcView(binding.popCenter7).setLoadImage(view1 -> {
                 view1.setImageResource(R.mipmap.ic_launcher);
             }).show();
+        });
+
+        binding.popBottom.setOnClickListener(view->{
+            Bottom2 bottom2=new Bottom2(this);
+            bottom2.show();
         });
 
     }
