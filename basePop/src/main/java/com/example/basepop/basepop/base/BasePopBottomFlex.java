@@ -156,6 +156,19 @@ public abstract class BasePopBottomFlex extends BasePop{
             isShowing=false;
         },animationDuration);
 
+  /*      ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor,hasShadow?shadowBgColor:startColor );
+        animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+
+            //    mContainer.setTranslationY(0);
+            }
+        });
+        animator.setInterpolator(new FastOutSlowInInterpolator());
+        animator.setDuration(isZeroDuration?0:animationDuration).start();*/
+
     }
 
     public void animateDismiss() {
@@ -176,6 +189,17 @@ public abstract class BasePopBottomFlex extends BasePop{
             mParent.removeView(mBase);
         },animationDuration);
 
+       /* ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, hasShadow?shadowBgColor:startColor);
+        animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+
+            }
+        });
+        animator.setInterpolator(new FastOutSlowInInterpolator());
+        animator.setDuration(isZeroDuration?0:animationDuration).start();*/
 
     }
 
