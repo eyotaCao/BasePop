@@ -96,6 +96,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+
+        <Button
+            android:id="@+id/pop_test_web"
+            android:layout_marginLeft="16dp"
+            android:text="测试webview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"/>
+
     </LinearLayout>
 
 

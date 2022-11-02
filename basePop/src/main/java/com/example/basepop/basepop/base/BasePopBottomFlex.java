@@ -54,7 +54,6 @@ public abstract class BasePopBottomFlex extends BasePop{
     private final boolean isZeroDuration = false;
     private boolean isClickThrough=true;
     private boolean isConScrollAble=true,hasShadow=false;
-    private final int shadowBgColor = Color.parseColor("#7F000000");
     private MyPopLis myPopLis;
     //offset
     public static float BOTTOM_OFFSET=0.4f;
@@ -118,7 +117,6 @@ public abstract class BasePopBottomFlex extends BasePop{
             if (!hasShadow){
                 return;
             }
-            mBaseView.setBackgroundColor((Integer) argbEvaluator.evaluate(Math.abs(percent),startColor,shadowBgColor));
         });
         try {
             mParent.addView(mBase);
@@ -153,20 +151,10 @@ public abstract class BasePopBottomFlex extends BasePop{
                 .setDuration(animationDuration)
               //  .withLayer()
                 .start();
-
-        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor,hasShadow?shadowBgColor:startColor );
-        animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                isShow=true;
-                isShowing=false;
-            //    mContainer.setTranslationY(0);
-            }
-        });
-        animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        mContainer.postDelayed(()->{
+            isShow=true;
+            isShowing=false;
+        },animationDuration);
 
     }
 
@@ -182,19 +170,12 @@ public abstract class BasePopBottomFlex extends BasePop{
                 .withLayer()
                 .start();
 
-        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, hasShadow?shadowBgColor:startColor);
-        animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                isShow=false;
-                isDismissing=false;
-                mParent.removeView(mBase);
-            }
-        });
-        animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        mContainer.postDelayed(()->{
+            isShow=false;
+            isDismissing=false;
+            mParent.removeView(mBase);
+        },animationDuration);
+
 
     }
 
@@ -380,7 +361,7 @@ public abstract class BasePopBottomFlex extends BasePop{
         return mBase;
     }
 
-    public ContainerBottomFlex getmContainer() {
+    public ContainerBottomFlex getContainer() {
         return mContainer;
     }
 

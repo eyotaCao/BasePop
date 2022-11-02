@@ -20,6 +20,8 @@ import com.example.cwjmodels.dialogs.Top;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,7 +73,24 @@ public class MainActivity extends AppCompatActivity {
             Bottom2 bottom2=new Bottom2(this);
             bottom2.show();
         });
+        /*
+        wv.getSettings().setJavaScriptEnabled(true);
+        wv.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                wv.loadUrl("javascript:document.body.style.padding=\"3%\"; void 0");
+            }
+        });
 
+
+        if (getLanguage().equals("zh")){//changeLan
+            wv.loadUrl("file:android_asset/LoginVerify.html");
+        }else {
+            wv.loadUrl("file:android_asset/LoginVerify2.html");
+        }
+
+        JavaScriptInterface ji= new JavaScriptInterface(this,imm,mEtPhone);
+        wv.addJavascriptInterface(ji,"Android");*/
     }
 
     @Override
