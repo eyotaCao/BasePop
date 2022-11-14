@@ -11,6 +11,7 @@ import com.example.basepop.basepop.base.utils.PxTool;
 * */
 public abstract class BasePop {
     protected Backgroud mBase;  //父容器
+    protected static final int animationDuration = 280;
 
     public BasePop(@NonNull Context context) {
         if (PxTool.mContext==null){

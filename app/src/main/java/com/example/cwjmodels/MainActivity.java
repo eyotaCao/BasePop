@@ -7,6 +7,7 @@ import com.example.basepop.basepop.base.photoViewer.ImageDialog;
 import com.example.cwjmodels.dialogs.Attach;
 import com.example.cwjmodels.dialogs.Bottom;
 import com.example.cwjmodels.dialogs.Bottom2;
+import com.example.cwjmodels.dialogs.BottomChat;
 import com.example.cwjmodels.dialogs.Center;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding.popBottom.setOnClickListener(view->{
             Bottom2 bottom2=new Bottom2(this);
+            bottom2.show();
+        });
+
+        binding.popBottomChat.setOnClickListener(view->{
+            BottomChat bottom2=new BottomChat(this);
             bottom2.show();
         });
         /*

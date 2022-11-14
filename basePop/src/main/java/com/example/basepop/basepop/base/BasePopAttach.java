@@ -36,7 +36,7 @@ public abstract class BasePopAttach extends BasePop{
     private int maxHeight=0,offsetX;
     private Animate animType= Animate.rightTop;
     //private int needTop,screenHeight;
-    private static final int animationDuration = 350;
+
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final int startColor = Color.TRANSPARENT;
