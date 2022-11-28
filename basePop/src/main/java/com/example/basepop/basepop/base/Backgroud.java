@@ -108,7 +108,7 @@ public class Backgroud extends FrameLayout {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if (x==event.getX()&&y==event.getY()){
+                if (Math.abs(x-event.getX())<8&&Math.abs(y-event.getY())<8){
                     mOnBack.onback();
                     disUpCount++;
                     post(()-> ((Activity) getContext()).dispatchTouchEvent(event));
