@@ -3,6 +3,10 @@
 
 使用：
 ```
+//添加仓库
+ maven { url 'https://jitpack.io' }
+ 
+//然后
 implementation 'com.github.EyoutaCao:BasePop:1.0.3'
 ```
 
