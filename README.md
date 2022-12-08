@@ -6,10 +6,12 @@
 //添加仓库
  maven { url 'https://jitpack.io' }
  
-//然后 这个是稳定版点下面图标是最新版
+//稳定版
 implementation 'com.github.EyoutaCao:BasePop:1.0.3'
 ```
+最新版
 [![](https://jitpack.io/v/EyoutaCao/BasePop.svg)](https://jitpack.io/#EyoutaCao/BasePop)
+
 
 优点:提升性能；基于view利于更改，可以完全自定义样式；全面屏手势下可以全屏展示，沉浸感更好；修复了xpopup的一些展示问题，原生dialog在全面屏手势下会出现导航栏不显示的情况，basePop可以全屏展示，当弹窗有EditText时可以实现弹窗自动移动到软键盘之上，拥有更好的交互体验。
 
