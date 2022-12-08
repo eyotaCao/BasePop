@@ -107,12 +107,20 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
-
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
         <Button
             android:id="@+id/pop_test_web"
+            android:visibility="gone"
             android:layout_marginLeft="16dp"
             android:text="测试webview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/pop_test_dialog"
+            android:layout_marginLeft="16dp"
+            android:text="测试原生"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <WebView

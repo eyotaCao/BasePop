@@ -1,6 +1,5 @@
 package com.example.basepop.basepop.base;
 
-import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
@@ -18,21 +17,17 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ScrollView;
 
 import androidx.core.widget.NestedScrollView;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-import androidx.transition.ChangeBounds;
-import androidx.transition.ChangeImageTransform;
 import androidx.transition.ChangeTransform;
+import androidx.transition.Fade;
 import androidx.transition.TransitionManager;
 import androidx.transition.TransitionSet;
 
 import com.example.basepop.basepop.base.utils.PxTool;
 import com.example.basepop.basepop.base.utils.ViewUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 //底部弹框 直接弹出
@@ -91,7 +86,7 @@ public abstract class BasePopChat extends BasePop {
         mContainer.setOnback(this::dismiss2);
         FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         flp.gravity= Gravity.BOTTOM;
-        boolean isShowNav=PxTool.isShowNavBar(activity);
+        boolean isShowNav= PxTool.isShowNavBar(activity);
         if (isShowNav){
             int resourceId=getResources().getIdentifier("navigation_bar_height","dimen","android");
             mNavigationHeight = getResources().getDimensionPixelSize(resourceId);

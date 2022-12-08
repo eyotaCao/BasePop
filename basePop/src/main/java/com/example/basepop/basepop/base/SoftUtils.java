@@ -12,10 +12,14 @@ public class SoftUtils {
 
     public static void addSoftListener(Activity activity, OnSoftChangeListener listener){
         FrameLayout content = (FrameLayout)activity.findViewById(android.R.id.content);
+        if (content==null){
+            content= (FrameLayout) activity.getWindow().getDecorView();
+        }
         View mChildOfContent = content.getChildAt(0);
         Rect rect = new Rect();
+        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
 
-        final int heightScreen = PxTool.getWindowHeight();
+        final int heightScreen = rect.bottom;
         final boolean[] isShow = {false};
         final int[] heightBefor = {0};
 
@@ -23,8 +27,9 @@ public class SoftUtils {
         //界面出现变动都会调用这个监听事件
         mChildOfContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
-                activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
 
+                activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+                // System.out.println("dasdsa:"+rect.bottom+"  screen:"+heightScreen);
                 int heightC=rect.bottom;
                 if (heightScreen>0&&heightC>0){
                     if (heightScreen>heightC){
