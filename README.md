@@ -6,7 +6,7 @@
 //添加仓库
  maven { url 'https://jitpack.io' }
  
-//然后
+//然后 这个是稳定版点下面图标是最新版
 implementation 'com.github.EyoutaCao:BasePop:1.0.3'
 ```
 [![](https://jitpack.io/v/EyoutaCao/BasePop.svg)](https://jitpack.io/#EyoutaCao/BasePop)
