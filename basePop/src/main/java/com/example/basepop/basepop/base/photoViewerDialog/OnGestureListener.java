@@ -1,4 +1,4 @@
-package com.example.basepop.basepop.base.photoViewer;
+package com.example.basepop.basepop.base.photoViewerDialog;
 
 interface OnGestureListener {
 

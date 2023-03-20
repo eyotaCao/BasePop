@@ -1,4 +1,4 @@
-package com.example.basepop.basepop.base;
+package com.example.basepop.basepop.base.base;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
@@ -9,21 +9,27 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
-//弹窗主内容容器，可限制最大宽高
-public class Container extends FrameLayout {
-    private int lastY,mHeight,maxHeight=0,maxWidth;
+//弹窗之底部弹出 的容器
+public class ContainerBottom extends FrameLayout implements ContainerInterface{
+    private int lastY;
+    private int mHeight;
+    private int maxHeight=0;
+    private int maxWidth;
     private boolean isScroll=false;
+    private onBack mOnBack;
+    private onScrollLis onScrollLis;
 
-    public Container(Context context,boolean isScroll) {
+
+    public ContainerBottom(Context context, boolean isScroll) {
         super(context);
         this.isScroll=isScroll;
     }
 
-    public Container(Context context, @Nullable AttributeSet attrs) {
+    public ContainerBottom(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public Container(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ContainerBottom(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -44,7 +50,10 @@ public class Container extends FrameLayout {
                     break;
                 case MotionEvent.ACTION_MOVE:
                     int dy =  lastY-(int) event.getRawY();
-                    setTranslationY(getTranslationY()-dy<=0?getTranslationY()-dy:0);
+                    setTranslationY(getTranslationY()-dy>=0?getTranslationY()-dy:0);
+                    if (onScrollLis!=null){
+                        onScrollLis.onScroll(((float) mHeight-getTranslationY())/mHeight);
+                    }
                     lastY = (int) event.getRawY();
                     break;
                 case MotionEvent.ACTION_UP:
@@ -57,8 +66,8 @@ public class Container extends FrameLayout {
 
     private void checkUp(){
         float tranY=getTranslationY();
-        if (-tranY>(float) mHeight/3f){
-            scroll(getTranslationY(),-mHeight);
+        if (tranY>(float) mHeight/2f){
+            scroll(getTranslationY(),mHeight);
         }else {
             scroll(getTranslationY(),0);
         }
@@ -71,9 +80,18 @@ public class Container extends FrameLayout {
     }
     public void scroll(float start,float end){
         ValueAnimator animator=ValueAnimator.ofFloat(start,end);
-        animator.addUpdateListener(animation -> setTranslationY((Float) animator.getAnimatedValue()));
+        animator.addUpdateListener(animation -> {
+            setTranslationY((Float) animator.getAnimatedValue());
+            if (onScrollLis!=null){
+                onScrollLis.onScroll(((float) mHeight-getTranslationY())/mHeight);
+                if ((Float) animator.getAnimatedValue()==mHeight&&mOnBack!=null){
+                    mOnBack.onback();
+                }
+            }
+        });
         animator.setDuration(200).start();
     }
+
 
     public void setMaxHeight(int maxHeight) {
         this.maxHeight = maxHeight;
@@ -108,4 +126,19 @@ public class Container extends FrameLayout {
         }
 
     }
+
+    public void setOnScrollLis(ContainerBottom.onScrollLis onScrollLis) {
+        this.onScrollLis = onScrollLis;
+    }
+
+    public interface onScrollLis{
+        void onScroll(float percent);
+    }
+    public interface onBack{
+        void onback();
+    }
+    public void setOnback(onBack onBack){
+        mOnBack=onBack;
+    }
+
 }

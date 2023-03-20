@@ -5,10 +5,9 @@ import android.app.Activity;
 import androidx.annotation.NonNull;
 
 import com.example.basepop.basepop.base.BasePopCenter;
-import com.example.basepop.basepop.base.BasePopCenter2;
 import com.example.cwjmodels.R;
 
-public class Center extends BasePopCenter2 {
+public class Center extends BasePopCenter {
     public Center(@NonNull Activity context) {
         super(context);
     }

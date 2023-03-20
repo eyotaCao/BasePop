@@ -1,4 +1,4 @@
-package com.example.basepop.basepop.base;
+package com.example.basepop.basepop.base.utils;
 
 import android.view.animation.Interpolator;
 

@@ -23,13 +23,10 @@ import android.view.WindowManager;
  */
 
 public class PxTool {
-    public static float W=375;
-    public static final float H=667;
+
     @SuppressLint("StaticFieldLeak")
     public static Context mContext;
     public static float scale ;
-    public static float widthRate=-1;
-    public static float heightRate=-1;
     public static int windowHeight;
     public static int screenWidth;
 
@@ -60,11 +57,6 @@ public class PxTool {
         int []wh=getScreenSize(context);
         screenWidth=wh[0];
         windowHeight =wh[1];
-        if (((float)wh[1]/(float)wh[0])<1.2&&wh[0]>1200){  //折叠屏
-            W=600;
-        }
-        widthRate=(float) screenWidth/ W;
-        heightRate=(float) windowHeight /H;
     }
 
     /**
@@ -144,42 +136,16 @@ public class PxTool {
     }
 
 
-
-
-
-    public static int dpToPx(Context context,float value) {
-        return (int)(widthRate*value);
+    public static int dp2px(int dpVal) {
+        return (int) (scale * dpVal + 0.5f);
     }
+
+
 
     public static int dpToPx(float value) {
-        return (int)(widthRate*value);
+        return (int) (scale * value + 0.5f);
     }
 
-    public static float getRate(){   //适配宽屏
-        return W/375f;
-    }
-
-    public static int pxToDp(Context context, float pxValue ) {
-        return (int)(pxValue/widthRate);
-    }
-
-    public static Float getWidth() {
-        return  widthRate;
-    }
-
-    public static Float getHeight() {return  heightRate;}
-
-    public static int FullScreenHeight(){   //app显示最大高度
-        return (int)(heightRate*H);
-    }
-
-    public static int FullScreenWidth(){
-        return (int)(widthRate*W);
-    }
-
-    public static int getFullHeight() {
-        return  (int)(heightRate*10);
-    }
 
     public static boolean checkDeviceHasNavigationBar(Context context) {
         boolean hasMenuKey = ViewConfiguration.get(context)
@@ -210,20 +176,6 @@ public class PxTool {
                 View.MeasureSpec.makeMeasureSpec(PxTool.dpToPx(1000), View.MeasureSpec.AT_MOST));
     }
 
-
-    private static void add(){
-        time++;
-    }
-    static int time;
-    private final float dex=16.6f;
-    static long start,end;
-    public static void checkUI1(){
-        start = time;
-    }
-    public static void checkUI2(){
-        end = time;
-        //ToastUtils.show("dex:"+(end-start));
-    }
 
     public static int[] getScreenSize(Context context) {
         int[] size = new int[2];

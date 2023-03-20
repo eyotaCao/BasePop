@@ -2,11 +2,9 @@ package com.example.cwjmodels;
 
 import android.os.Bundle;
 
-import com.example.basepop.basepop.base.photoViewer.BasePopImage;
-import com.example.basepop.basepop.base.photoViewer.ImageDialog;
+import com.example.basepop.basepop.base.photoViewerDialog.ImageDialog;
 import com.example.cwjmodels.dialogs.Attach;
 import com.example.cwjmodels.dialogs.Bottom;
-import com.example.cwjmodels.dialogs.Bottom2;
 import com.example.cwjmodels.dialogs.BottomAnDialog;
 import com.example.cwjmodels.dialogs.BottomChat;
 import com.example.cwjmodels.dialogs.Center;
@@ -19,12 +17,8 @@ import com.example.cwjmodels.databinding.ActivityMainBinding;
 import com.example.cwjmodels.dialogs.CenterBottom;
 import com.example.cwjmodels.dialogs.CenterEdit;
 import com.example.cwjmodels.dialogs.Top;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import android.view.Menu;
-import android.view.MenuItem;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -70,11 +64,6 @@ public class MainActivity extends AppCompatActivity {
             imageDialog.setSrcView(binding.popCenter7).setLoadImage(view1 -> {
                 view1.setImageResource(R.mipmap.ic_launcher);
             }).show();
-        });
-
-        binding.popBottom.setOnClickListener(view->{
-            Bottom2 bottom2=new Bottom2(this);
-            bottom2.show();
         });
 
         binding.popBottomChat.setOnClickListener(view->{

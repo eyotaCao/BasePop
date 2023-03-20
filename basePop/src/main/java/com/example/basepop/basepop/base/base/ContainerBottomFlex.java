@@ -1,4 +1,4 @@
-package com.example.basepop.basepop.base;
+package com.example.basepop.basepop.base.base;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
@@ -9,8 +9,10 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
+import com.example.basepop.basepop.base.views.MyNestScrollView;
+
 //弹窗之底部弹出 的容器
-public class ContainerBottom extends FrameLayout {
+public class ContainerBottomFlex extends FrameLayout {
     private int lastY;
     private int mHeight;
     private int maxHeight=0;
@@ -18,59 +20,122 @@ public class ContainerBottom extends FrameLayout {
     private boolean isScroll=false;
     private onBack mOnBack;
     private onScrollLis onScrollLis;
+    private MyNestScrollView mScroll;
 
 
-    public ContainerBottom(Context context, boolean isScroll) {
+    public ContainerBottomFlex(Context context, boolean isScroll) {
         super(context);
         this.isScroll=isScroll;
     }
 
-    public ContainerBottom(Context context, @Nullable AttributeSet attrs) {
+    public ContainerBottomFlex(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ContainerBottom(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ContainerBottomFlex(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
+    boolean re=false,re2=false;
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        return super.dispatchTouchEvent(event);
-
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
         if (isScroll){
             int action = event.getAction();
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
                     lastY = (int) event.getRawY();
+                    getParent().requestDisallowInterceptTouchEvent(false);
+                    mScroll.onTouchEvent(event);
                     break;
                 case MotionEvent.ACTION_MOVE:
                     int dy =  lastY-(int) event.getRawY();
-                    setTranslationY(getTranslationY()-dy>=0?getTranslationY()-dy:0);
-                    if (onScrollLis!=null){
-                        onScrollLis.onScroll(((float) mHeight-getTranslationY())/mHeight);
+                    boolean cansScroll=false;
+                    if (dy>0){
+                        if (getTranslationY()==0){
+
+                            if (!re){
+                                re=true;
+                                event.setAction(MotionEvent.ACTION_DOWN);
+                                event.setLocation(event.getRawX(),event.getRawY()-1);
+                                mScroll.onTouchEvent(event);
+                            }
+                            event.setAction(MotionEvent.ACTION_MOVE);
+                            mScroll.onTouchEvent(event);
+                        }else {
+                            re=false;
+                            cansScroll=true;
+                        }
+                    }else {
+                        if (!mScroll.canScrollVertically(-1)){
+                            if (!re2){
+                                re2=true;
+                                dy=0;
+                            }
+
+
+                            cansScroll=true;
+                        }else {
+                            re2=false;
+                        }
+                        mScroll.onTouchEvent(event);
                     }
-                    lastY = (int) event.getRawY();
+                    if (cansScroll){
+
+                        setTranslationY(getTranslationY()-dy<=0?0:getTranslationY()-dy);
+                        if (onScrollLis!=null){
+                            onScrollLis.onScroll(((float) mHeight-getTranslationY())/mHeight);
+                        }
+                        lastY = (int) event.getRawY();
+                    }else {
+
+                    }
                     break;
                 case MotionEvent.ACTION_UP:
                     checkUp();
+                    mScroll.onTouchEvent(event);
+                    break;
+                default:
+                    mScroll.onTouchEvent(event);
                     break;
             }
         }
         return true;
     }
 
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+
+        return super.onInterceptTouchEvent(ev);
+
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+    }
+
+    //0  hei*offset  hei
     private void checkUp(){
         float tranY=getTranslationY();
-        if (tranY>(float) mHeight/2f){
-            scroll(getTranslationY(),mHeight);
-        }else {
+
+        if (tranY<(float) mHeight* BasePopBottomFlex.BOTTOM_OFFSET/2f){
             scroll(getTranslationY(),0);
+        }else if (
+                tranY<(float) mHeight*(1-(BasePopBottomFlex.BOTTOM_OFFSET/2f+0.1))){
+            scroll(getTranslationY(),mHeight*BasePopBottomFlex.BOTTOM_OFFSET);
+        }else {
+            scroll(getTranslationY(),mHeight);
         }
+    }
+
+    public void setScroll(MyNestScrollView mScroll) {
+        this.mScroll = mScroll;
+    }
+
+    @Override
+    public void setTranslationY(float translationY) {
+        super.setTranslationY(translationY);
     }
 
     @Override
@@ -127,7 +192,7 @@ public class ContainerBottom extends FrameLayout {
 
     }
 
-    public void setOnScrollLis(ContainerBottom.onScrollLis onScrollLis) {
+    public void setOnScrollLis(ContainerBottomFlex.onScrollLis onScrollLis) {
         this.onScrollLis = onScrollLis;
     }
 

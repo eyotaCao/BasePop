@@ -20,6 +20,11 @@ import android.widget.ScrollView;
 import androidx.core.widget.NestedScrollView;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
+import com.example.basepop.basepop.base.base.BackgroudView;
+import com.example.basepop.basepop.base.base.BasePop;
+import com.example.basepop.basepop.base.base.BasePopConstants;
+import com.example.basepop.basepop.base.base.ContainerBottom;
+import com.example.basepop.basepop.base.utils.SoftUtils;
 import com.example.basepop.basepop.base.utils.PxTool;
 import com.example.basepop.basepop.base.utils.ViewUtils;
 
@@ -27,15 +32,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 //底部弹框 有输入框自动弹起
-public abstract class BasePopBottom extends BasePop{
-    protected int layout;
-    protected BackgroudView mBaseView; //阴影背景
-    protected ViewGroup mParent;
+public abstract class BasePopBottom extends BasePop {
     protected View mContent;
     protected ContainerBottom mContainer;
-    protected Activity activity;
-    protected boolean isShow=false,isCreate=false;
-    protected boolean isShowing=false,isDismissing=false,isAutoEdit=false;
+    protected boolean isShow=false;
+    protected boolean isAutoEdit=false;
     private List<EditText> mEdits;
     private ScrollView mScroll;
     private ViewGroup mScrollChild;
@@ -50,20 +51,12 @@ public abstract class BasePopBottom extends BasePop{
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final int startColor = Color.TRANSPARENT;
     private final boolean isZeroDuration = false;
-    private boolean isClickThrough=true;
     private boolean isConScrollAble=true;
-    private final int shadowBgColor = Color.parseColor("#7F000000");
-    private MyPopLis myPopLis;
 
     public BasePopBottom(Activity activity){
         super(activity);
-        this.activity =activity;
-        setLayout(getImplLayoutId());
-        getMaxHeight();
     }
 
-
-    protected abstract int getImplLayoutId();
 
     public void setLayout(int layout){
         this.layout=layout;
@@ -71,15 +64,11 @@ public abstract class BasePopBottom extends BasePop{
 
     @SuppressLint("ClickableViewAccessibility")
     protected void onCreate(){  //加入弹窗
-
-        isCreate=true;
-        mBase=new Backgroud(activity);
-        mBase.setClickThrough(isClickThrough);
-        mBase.setOnback(this::dismiss);
+        super.onCreate();
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mContent= LayoutInflater.from(activity).inflate(layout,mBase,false);
         mContainer=new ContainerBottom(activity,isConScrollAble);
-        mContainer.setOnback(this::dismiss2);
+        mContainer.setOnback(this::dismiss);
         FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         flp.gravity= Gravity.BOTTOM;
         try {
@@ -102,18 +91,10 @@ public abstract class BasePopBottom extends BasePop{
         mBaseView.setOnback(this::dismiss);
         FrameLayout.LayoutParams flp2=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mBaseView.setLayoutParams(flp2);
-        mBase.addView(mBaseView);  //背景
-        mBase.addView(mContainer);  //弹窗
-        mParent =(FrameLayout) activity.getWindow().getDecorView();
-        mParent.setOnTouchListener((v, event) -> false);
+
         mContainer.setOnScrollLis(percent -> {
             mBaseView.setBackgroundColor((Integer) argbEvaluator.evaluate(Math.abs(percent),startColor,shadowBgColor));
         });
-        try {
-            mParent.addView(mBase);
-        }catch (Exception ignored){
-
-        }
         if (isAutoEdit){
             try {
 
@@ -131,8 +112,8 @@ public abstract class BasePopBottom extends BasePop{
 
     public void animateShow() {
 
-        if (myPopLis!=null){
-            myPopLis.onShow();
+        if (myPopListener !=null){
+            myPopListener.onShow();
         }
         mContainer.setTranslationY(0);
         ViewPropertyAnimator animator2 ;
@@ -148,8 +129,7 @@ public abstract class BasePopBottom extends BasePop{
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                isShow=true;
-                isShowing=false;
+                showState = BasePopConstants.SHOW_STATE_SHOW;
                 mContainer.setTranslationY(0);
             }
         });
@@ -159,8 +139,8 @@ public abstract class BasePopBottom extends BasePop{
 
     public void animateDismiss() {
 
-        if (myPopLis!=null){
-            myPopLis.onDismiss();
+        if (myPopListener !=null){
+            myPopListener.onDismiss();
         }
         ViewPropertyAnimator animator2 ;
         animator2 = mContent.animate().translationY(oldHeight);
@@ -175,8 +155,7 @@ public abstract class BasePopBottom extends BasePop{
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                isShow=false;
-                isDismissing=false;
+
                 mParent.removeView(mBase);
             }
         });
@@ -213,8 +192,8 @@ public abstract class BasePopBottom extends BasePop{
     }
 
     public void beforeShow(){   //弹窗显示之前执行
-        if (myPopLis!=null){
-            myPopLis.beforeShow();
+        if (myPopListener !=null){
+            myPopListener.beforeShow();
         }
         initAnimator();
     }
@@ -230,43 +209,11 @@ public abstract class BasePopBottom extends BasePop{
     }
 
     public void beforeDismiss(){
-        if (myPopLis!=null){
-            myPopLis.beforeDismiss();
+        if (myPopListener !=null){
+            myPopListener.beforeDismiss();
         }
     }
 
-    public void show(){
-        activity.getWindow().getDecorView().post(()->{
-            if (isShowing||isShow){
-                if (isShow){
-                    dismiss();
-                }
-                return;
-            }
-            isShowing=true;
-            if (!isCreate){
-                onCreate();
-            }else {
-                try {
-                    mParent.addView(mBase);
-                    mBase.init();
-                }catch (Exception ignored){}
-            }
-
-            beforeShow();
-            animateShow();
-        });
-
-    }
-    public void dismiss(){
-        if (isDismissing){
-            return;
-        }
-        isDismissing=true;
-        beforeDismiss();
-        animateDismiss();
-        onDismiss();
-    }
 
     private void initAutoEdit(){
         mEdits=new ArrayList<>();
@@ -340,27 +287,6 @@ public abstract class BasePopBottom extends BasePop{
     }
 
 
-    public void dismiss2(){
-        if (isDismissing){
-            return;
-        }
-        isDismissing=true;
-        beforeDismiss();
-        isShow=false;
-        isDismissing=false;
-        mParent.removeView(mBase);
-        onDismiss();
-    }
-    protected void onDismiss() {
-
-    }
-    protected int getMaxHeight(){
-        return 0;
-    }
-    public BasePopBottom setPopListener(MyPopLis myPopLis){
-        this.myPopLis=myPopLis;
-        return this;
-    }
 
     public ViewGroup getBase() {
         return mBase;
@@ -370,6 +296,4 @@ public abstract class BasePopBottom extends BasePop{
         return mContainer;
     }
 
-    public static class MyPopLis extends BasePop.MyPopLis {
-    }
 }

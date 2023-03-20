@@ -1,4 +1,4 @@
-package com.example.basepop.basepop.base;
+package com.example.basepop.basepop.base.base;
 
 
 
@@ -6,8 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
-
-import com.example.basepop.R;
 
 /*
 * author:cwj
@@ -36,13 +34,7 @@ public abstract class BasePop2 extends Dialog {
         dismiss();
     }
 
-    public static class MyPopLis{
-        protected void beforeShow(){};
-        protected void beforeDismiss(){};
-        protected void onShow(){};
-        protected void onDismiss(){};
-        protected void onBack(){};
-    }
+
 
     public void destroy(){
 

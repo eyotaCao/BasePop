@@ -2,14 +2,13 @@ package com.example.basepop.basepop.base.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 
-import com.example.basepop.basepop.base.ContainerBottomFlex;
+import com.example.basepop.basepop.base.base.ContainerBottomFlex;
 
 public class MyNestScrollView extends NestedScrollView {
     private ContainerBottomFlex container;

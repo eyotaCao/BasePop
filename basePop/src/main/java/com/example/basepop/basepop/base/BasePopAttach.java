@@ -16,20 +16,21 @@ import android.widget.FrameLayout;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import com.example.basepop.R;
+import com.example.basepop.basepop.base.base.BackgroudView;
+import com.example.basepop.basepop.base.base.BasePop;
+import com.example.basepop.basepop.base.base.BasePopConstants;
+import com.example.basepop.basepop.base.base.Container;
 import com.example.basepop.basepop.base.utils.PxTool;
 import com.example.basepop.basepop.base.utils.ViewUtils;
 
 
 //依附于某个view弹窗
-public abstract class BasePopAttach extends BasePop{
-    protected int layout;
+public abstract class BasePopAttach extends BasePop {
     protected BackgroudView mBaseView; //阴影背景
     protected ViewGroup mParent;
     protected View mContent,mAttachView;
     protected Container mContainer;
-    protected Activity activity;
-    protected boolean isShow=false,isCreate=false,isShowBg=true;
-    protected boolean isShowing=false,isDismissing=false;
+    protected boolean isShow=false,isShowBg=true;
     protected boolean dismissTouchOutside=true,dismissOnBack=true;
     //contentAnimate
     float startScale = .75f;
@@ -41,10 +42,7 @@ public abstract class BasePopAttach extends BasePop{
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final int startColor = Color.TRANSPARENT;
     private final boolean isZeroDuration = false;
-    private boolean isClickThrough=false;
     private boolean isConScrollAble=false;
-    private int shadowBgColor = Color.parseColor("#7F000000");
-    private MyPopLis myPopLis;
 
     public enum Animate{  //动画开始位置
         center,rightTop,rightBottom,leftTop,leftBottom,auto
@@ -57,29 +55,15 @@ public abstract class BasePopAttach extends BasePop{
     }
 
 
-    protected abstract int getImplLayoutId();
-
     public void setLayout(int layout){
         this.layout=layout;
     }
 
     protected void onCreate(){  //加入弹窗
-
-        isCreate=true;
-        mBase=new Backgroud(activity);
-        mBase.setClickThrough(isClickThrough);
-        mBase.setOnback(()->{
-            if (myPopLis!=null){
-                myPopLis.onBack();
-            }
-            if (dismissOnBack){
-                dismiss();
-            }
-        });
+        super.onCreate();
         if (!isShowBg){
             shadowBgColor= R.color.transparent;
         }
-        maxHeight=getMaxHeight();
         //初始高度
         int maxWidth = getMaxWidth();
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -217,8 +201,8 @@ public abstract class BasePopAttach extends BasePop{
 
     public void animateShow() {
 
-        if (myPopLis!=null){
-            myPopLis.onShow();
+        if (myPopListener !=null){
+            myPopListener.onShow();
         }
         mContainer.post(() -> mContainer.animate().scaleX(1f).scaleY(1f).alpha(1f)
                 .setDuration(animationDuration)
@@ -235,8 +219,7 @@ public abstract class BasePopAttach extends BasePop{
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                isShow=true;
-                isShowing=false;
+                showState = BasePopConstants.SHOW_STATE_SHOW;
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
@@ -246,8 +229,8 @@ public abstract class BasePopAttach extends BasePop{
 
     public void animateDismiss() {
 
-        if (myPopLis!=null){
-            myPopLis.onDismiss();
+        if (myPopListener !=null){
+            myPopListener.onDismiss();
         }
         mContainer.animate().scaleX(startScale).scaleY(startScale).alpha(0f).setDuration(animationDuration)
                 .setInterpolator(new FastOutSlowInInterpolator())
@@ -263,8 +246,7 @@ public abstract class BasePopAttach extends BasePop{
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                isShow=false;
-                isDismissing=false;
+                showState = BasePopConstants.SHOW_STATE_DISMISS;
                 try {
                     mParent.removeView(mBase);
                 }catch (Exception ignored){}
@@ -280,12 +262,6 @@ public abstract class BasePopAttach extends BasePop{
     }
 
 
-    //设置没有阴影的背景点击可穿透
-    public BasePopAttach setClickThrough(boolean clickThrough) {
-        isClickThrough = clickThrough;
-        return this;
-    }
-
     public BasePopAttach setMaxHeight(int max) {
         maxHeight=max;
         return this;
@@ -295,10 +271,7 @@ public abstract class BasePopAttach extends BasePop{
         this.isShowBg=isShowBg;
         return this;
     }
-    public BasePopAttach setDismissTouchOutside(boolean dismissTouchOutside) {
-        this.dismissTouchOutside = dismissTouchOutside;
-        return this;
-    }
+
 
     public BasePopAttach setDismissOnBack(boolean dismissOnBack) {
         this.dismissOnBack = dismissOnBack;
@@ -319,15 +292,15 @@ public abstract class BasePopAttach extends BasePop{
     }
 
     public void beforeShow(){   //弹窗显示之前执行
-        if (myPopLis!=null){
-            myPopLis.beforeShow();
+        if (myPopListener !=null){
+            myPopListener.beforeShow();
         }
         initAnimator();
     }
 
     public void beforeDismiss(){
-        if (myPopLis!=null){
-            myPopLis.beforeDismiss();
+        if (myPopListener !=null){
+            myPopListener.beforeDismiss();
         }
     }
 
@@ -346,50 +319,13 @@ public abstract class BasePopAttach extends BasePop{
         return this;
     }
 
-    public void show(){
-        if (isShowing||isShow){
-            if (isShow){
-                dismiss();
-            }
-            return;
-        }
-        isShowing=true;
-        if (!isCreate){
-            onCreate();
-        }else {
-            try {
-                mParent.addView(mBase);
-                mBase.init();
-            }catch (Exception ignored){}
-        }
-
-        beforeShow();
-        animateShow();
-    }
-    public void dismiss(){
-        if (isDismissing){
-            return;
-        }
-        isDismissing=true;
-        beforeDismiss();
-        animateDismiss();
-        onDismiss();
-    }
     protected void onDismiss() {
 
     }
-    protected int getMaxHeight(){
-        return 0;
-    }
-    public BasePopAttach setPopListener(MyPopLis myPopLis){
-        this.myPopLis=myPopLis;
-        return this;
-    }
+
+
 
     protected int getMaxWidth(){return 0;}
 
 
-
-    public static class MyPopLis extends BasePop.MyPopLis {
-    }
 }

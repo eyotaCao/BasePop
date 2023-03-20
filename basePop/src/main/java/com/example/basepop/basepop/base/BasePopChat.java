@@ -1,8 +1,6 @@
 package com.example.basepop.basepop.base;
 
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -21,10 +19,15 @@ import android.widget.FrameLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.transition.ChangeTransform;
-import androidx.transition.Fade;
 import androidx.transition.TransitionManager;
 import androidx.transition.TransitionSet;
 
+import com.example.basepop.basepop.base.base.BackgroudView;
+import com.example.basepop.basepop.base.base.BasePop;
+import com.example.basepop.basepop.base.base.BasePopConstants;
+import com.example.basepop.basepop.base.base.ContainerBottom;
+import com.example.basepop.basepop.base.base.ContainerInterface;
+import com.example.basepop.basepop.base.utils.SoftUtils;
 import com.example.basepop.basepop.base.utils.PxTool;
 import com.example.basepop.basepop.base.utils.ViewUtils;
 
@@ -32,14 +35,12 @@ import com.example.basepop.basepop.base.utils.ViewUtils;
 
 //底部弹框 直接弹出
 public abstract class BasePopChat extends BasePop {
-    protected int layout;
     protected BackgroudView mBaseView; //阴影背景
     protected ViewGroup mParent;
     protected View mContent;
-    protected ContainerBottom mContainer;
-    protected Activity activity;
+    protected ContainerBottom mContainer; //内容父容器
     protected boolean isShow=false,isCreate=false;
-    protected boolean isShowing=false,isDismissing=false,isAutoEdit=false;
+    protected boolean isAutoEdit=false;
     private InputMethodManager imm;
     //是否显示导航栏
     private boolean isShowNavi=false;
@@ -48,26 +49,19 @@ public abstract class BasePopChat extends BasePop {
     private NestedScrollView mScroll2;
     private EditText mEditText;
 
+
     //contentAnimate
     private int  oldHeight,maxHeight=0;  //初始高度
     //shadowAnimate
-    public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
-    private final int startColor = Color.TRANSPARENT;
-    private final boolean isZeroDuration = false;
-    private boolean isClickThrough=true,isShowBg;
     private boolean isConScrollAble=true;
-    private final int shadowBgColor = Color.parseColor("#7F000000");
-    private MyPopLis myPopLis;
+
 
     public BasePopChat(Activity activity){
         super(activity);
         this.activity =activity;
         setLayout(getImplLayoutId());
-        getMaxHeight();
     }
 
-
-    protected abstract int getImplLayoutId();
 
     public void setLayout(int layout){
         this.layout=layout;
@@ -75,15 +69,11 @@ public abstract class BasePopChat extends BasePop {
 
     @SuppressLint("ClickableViewAccessibility")
     protected void onCreate(){  //加入弹窗
-
-        isCreate=true;
-        mBase=new Backgroud(activity);
-        mBase.setClickThrough(isClickThrough);
-        mBase.setOnback(this::dismiss);
+        super.onCreate();
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mContent= LayoutInflater.from(activity).inflate(layout,mBase,false);
         mContainer=new ContainerBottom(activity,isConScrollAble);
-        mContainer.setOnback(this::dismiss2);
+        mContainer.setOnback(this::dismiss);
         FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         flp.gravity= Gravity.BOTTOM;
         boolean isShowNav= PxTool.isShowNavBar(activity);
@@ -142,8 +132,8 @@ public abstract class BasePopChat extends BasePop {
     private boolean isPostShowSoft;
     public void animateShow() {
 
-        if (myPopLis!=null){
-            myPopLis.onShow();
+        if (myPopListener !=null){
+            myPopListener.onShow();
         }
         initAutoEdit();
         isPostShowSoft=true;
@@ -154,8 +144,7 @@ public abstract class BasePopChat extends BasePop {
                 .setInterpolator(new FastOutSlowInInterpolator()));
         mContent.setTranslationY(0);
         mContent.postDelayed(()->{
-            isShow=true;
-            isShowing=false;
+            showState = BasePopConstants.SHOW_STATE_SHOW;
             mContainer.setTranslationY(0);
         },animationDuration);
 
@@ -163,12 +152,11 @@ public abstract class BasePopChat extends BasePop {
 
     public void animateDismiss() {
 
-        if (myPopLis!=null){
-            myPopLis.onDismiss();
+        if (myPopListener !=null){
+            myPopListener.onDismiss();
         }
         mContent.postDelayed(()->{
-            isShow=false;
-            isDismissing=false;
+            showState = BasePopConstants.SHOW_STATE_DISMISS;
             mParent.removeView(mBase);
         },animationDuration);
         if (isChange){
@@ -218,8 +206,8 @@ public abstract class BasePopChat extends BasePop {
     }
 
     public void beforeShow(){   //弹窗显示之前执行
-        if (myPopLis!=null){
-            myPopLis.beforeShow();
+        if (myPopListener !=null){
+            myPopListener.beforeShow();
         }
         initAnimator();
     }
@@ -264,46 +252,10 @@ public abstract class BasePopChat extends BasePop {
     }
 
     public void beforeDismiss(){
-        if (myPopLis!=null){
-            myPopLis.beforeDismiss();
+        if (myPopListener !=null){
+            myPopListener.beforeDismiss();
         }
 
-    }
-
-    public void show(){
-        activity.getWindow().getDecorView().post(()->{
-            if (isShowing||isShow){
-                if (isShow){
-                    dismiss();
-                }
-                return;
-            }
-            isShowing=true;
-            if (!isCreate){
-                onCreate();
-            }else {
-                try {
-                    mParent.addView(mBase);
-                    mBase.init();
-                }catch (Exception ignored){}
-            }
-
-            beforeShow();
-            animateShow();
-        });
-
-    }
-
-    public void dismiss(){
-        if (isDismissing){
-            return;
-        }
-
-        isDismissing=true;
-        beforeDismiss();
-        animateDismiss();
-
-        onDismiss();
     }
 
     public BasePopChat setEdit(EditText mEdits) {
@@ -328,7 +280,7 @@ public abstract class BasePopChat extends BasePop {
                 mContainer.setTranslationY(-change);
             }else {
                 if (!isChange)return;
-                if (isDismissing){
+                if (showState == BasePopConstants.SHOW_STATE_DISMISS){
                     TransitionManager.beginDelayedTransition((ViewGroup) mContainer.getParent(), new TransitionSet()
                             .setDuration(200)
                             .addTransition(new ChangeTransform())
@@ -336,7 +288,7 @@ public abstract class BasePopChat extends BasePop {
                 }
 
                 isChange=false;
-                mContainer.setTranslationY(isDismissing?mContainer.getMeasuredHeight():0);
+                mContainer.setTranslationY(showState == BasePopConstants.SHOW_STATE_DISMISSING?mContainer.getMeasuredHeight():0);
                 mBase.init();
             }
         });
@@ -345,36 +297,15 @@ public abstract class BasePopChat extends BasePop {
 
 
 
-    public void dismiss2(){
-        if (isDismissing){
-            return;
-        }
-        isDismissing=true;
-        beforeDismiss();
-        isShow=false;
-        isDismissing=false;
-        mParent.removeView(mBase);
-        onDismiss();
-    }
+
     protected void onDismiss() {
 
     }
-    protected int getMaxHeight(){
-        return 0;
-    }
-    public BasePopChat setPopListener(MyPopLis myPopLis){
-        this.myPopLis=myPopLis;
-        return this;
-    }
+
 
     public ViewGroup getBase() {
         return mBase;
     }
 
-    public ContainerBottom getmContainer() {
-        return mContainer;
-    }
 
-    public static class MyPopLis extends BasePop.MyPopLis {
-    }
 }

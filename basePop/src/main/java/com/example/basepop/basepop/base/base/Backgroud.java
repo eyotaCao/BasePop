@@ -1,4 +1,4 @@
-package com.example.basepop.basepop.base;
+package com.example.basepop.basepop.base.base;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -15,8 +15,9 @@ public class Backgroud extends FrameLayout {
     private onBack mOnBack;
     private boolean isClickThrough;
 
-    public Backgroud(@NonNull Context context) {
+    public Backgroud(@NonNull Context context, onBack onBack) {
         super(context);
+        this.mOnBack = onBack;
         init();
         init2();
     }
@@ -44,7 +45,7 @@ public class Backgroud extends FrameLayout {
         requestFocus();
         setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
-                mOnBack.onback();
+                mOnBack.onBack();
                 return true;
             }
             return false;
@@ -82,7 +83,7 @@ public class Backgroud extends FrameLayout {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 if (x1==event.getX()&&y1==event.getY()){
-                    mOnBack.onback();
+                    mOnBack.onBack();
                 }
 
                 if (isClickThrough){
@@ -103,7 +104,7 @@ public class Backgroud extends FrameLayout {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 if (Math.abs(x-event.getX())<8&&Math.abs(y-event.getY())<8){
-                    mOnBack.onback();
+                    mOnBack.onBack();
                     post(()-> ((Activity) getContext()).dispatchTouchEvent(event));
                 }
 
@@ -119,10 +120,7 @@ public class Backgroud extends FrameLayout {
     }
 
 
-    public interface onBack{
-        void onback();
-    }
-    public void setOnback(onBack onBack){
-        mOnBack=onBack;
+    public static interface onBack {
+        void onBack();
     }
 }

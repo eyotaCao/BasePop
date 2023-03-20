@@ -11,26 +11,24 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 
-//中心弹框  中心弹出动画
-public abstract class BasePopFullScreen extends BasePop{
-    protected int layout;
+import com.example.basepop.basepop.base.base.BackgroudView;
+import com.example.basepop.basepop.base.base.BasePop;
+import com.example.basepop.basepop.base.base.BasePopConstants;
+import com.example.basepop.basepop.base.base.Container;
+import com.example.basepop.basepop.base.utils.FastOutSlowInInterpolator;
+
+//全屏弹窗
+public abstract class BasePopFullScreen extends BasePop {
     protected BackgroudView mBaseView; //阴影背景
     protected ViewGroup mParent;
     protected View mContent;
     protected Container mContainer;
-    protected Activity activity;
-    protected boolean isShow=false,isCreate=false;
-    protected boolean isShowing=false,isDismissing=false;
-    protected boolean dismissTouchOutside=true,dismissOnBack=true;
+    protected boolean isShow=false;
+    protected boolean dismissTouchOutside=true;
     //contentAnimate
     float startScale = 0;
-    private int maxHeight=0;
-    //private int needTop,screenHeight;
-    private int animationDuration = 350;
-    //shadowAnimate
-    private boolean isClickThrough=false;
+
     private boolean isConScrollAble=false;
-    private MyPopLis myPopLis;
 
     public BasePopFullScreen(Activity activity){
         super(activity);
@@ -39,26 +37,12 @@ public abstract class BasePopFullScreen extends BasePop{
     }
 
 
-    protected abstract int getImplLayoutId();
-
     public void setLayout(int layout){
         this.layout=layout;
     }
 
     protected void onCreate(){  //加入弹窗
-
-        isCreate=true;
-        mBase=new Backgroud(activity);
-        mBase.setClickThrough(isClickThrough);
-        mBase.setOnback(()->{
-            if (myPopLis!=null){
-                myPopLis.onBack();
-            }
-            if (dismissOnBack){
-                dismiss();
-            }
-        });
-        maxHeight=getMaxHeight();
+        super.onCreate();
         //初始高度
         int maxWidth = getMaxWidth();
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -98,8 +82,8 @@ public abstract class BasePopFullScreen extends BasePop{
 
     public void animateShow() {
 
-        if (myPopLis!=null){
-            myPopLis.onShow();
+        if (myPopListener !=null){
+            myPopListener.onShow();
         }
 
         mContainer.animate().alpha(1f)
@@ -107,8 +91,7 @@ public abstract class BasePopFullScreen extends BasePop{
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-                        isShow=true;
-                        isShowing=false;
+                        showState = BasePopConstants.SHOW_STATE_SHOW;
                     }
                 })
                 .setInterpolator(new OvershootInterpolator(1f))
@@ -121,20 +104,20 @@ public abstract class BasePopFullScreen extends BasePop{
 
     public void animateDismiss() {
 
-        if (myPopLis!=null){
-            myPopLis.onDismiss();
+        if (myPopListener !=null){
+            myPopListener.onDismiss();
         }
         mContainer.animate().alpha(0f).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-                        isShow=false;
-                        isDismissing=false;
+                        showState = BasePopConstants.SHOW_STATE_DISMISS;
                         try {
                             mParent.removeView(mBase);
                         }catch (Exception ignored){}
+
                     }
-                }).setDuration(animationDuration)
+        }).setDuration(animationDuration)
                 .setInterpolator(new FastOutSlowInInterpolator())
 //                .withLayer() 在部分6.0系统会引起crash
                 .start();
@@ -157,10 +140,6 @@ public abstract class BasePopFullScreen extends BasePop{
         return this;
     }
 
-    public BasePopFullScreen setDismissTouchOutside(boolean dismissTouchOutside) {
-        this.dismissTouchOutside = dismissTouchOutside;
-        return this;
-    }
 
     public BasePopFullScreen setDismissOnBack(boolean dismissOnBack) {
         this.dismissOnBack = dismissOnBack;
@@ -181,66 +160,25 @@ public abstract class BasePopFullScreen extends BasePop{
     }
 
     public void beforeShow(){   //弹窗显示之前执行
-        if (myPopLis!=null){
-            myPopLis.beforeShow();
+        if (myPopListener !=null){
+            myPopListener.beforeShow();
         }
         initAnimator();
     }
 
     public void beforeDismiss(){
-        if (myPopLis!=null){
-            myPopLis.beforeDismiss();
+        if (myPopListener !=null){
+            myPopListener.beforeDismiss();
         }
-    }
-
-    public void show(){
-        if (isShowing||isShow){
-            if (isShow){
-                dismiss();
-            }
-            return;
-        }
-        isShowing=true;
-        if (!isCreate){
-            onCreate();
-        }else {
-            try {
-                mParent.addView(mBase);
-                mBase.init();
-            }catch (Exception ignored){}
-        }
-
-        beforeShow();
-        animateShow();
-    }
-    public void dismiss(){
-        if (isDismissing){
-            return;
-        }
-        isDismissing=true;
-        beforeDismiss();
-        animateDismiss();
-        onDismiss();
     }
     protected void onDismiss() {
 
     }
 
-    public BasePopFullScreen setAnimationDuration(int animationDuration) {
-        this.animationDuration = animationDuration;
-        return this;
-    }
 
-    protected int getMaxHeight(){
-        return 0;
-    }
-    public BasePopFullScreen setPopListener(MyPopLis myPopLis){
-        this.myPopLis=myPopLis;
-        return this;
-    }
 
-    public static class MyPopLis extends BasePop.MyPopLis {
-    }
+
+
 
     protected int getMaxWidth(){return 0;}
 

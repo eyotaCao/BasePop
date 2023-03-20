@@ -1,4 +1,6 @@
-package com.example.basepop.basepop.base;
+package com.example.basepop.basepop.base.utils;
+
+import com.example.basepop.basepop.base.utils.LookupTableInterpolator;
 
 /**
  * Interpolator corresponding to {@link android.R.interpolator#fast_out_slow_in}.
