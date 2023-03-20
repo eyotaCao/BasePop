@@ -61,7 +61,7 @@ public class Backgroud extends FrameLayout {
         return super.onInterceptTouchEvent(ev);
     }
 
-    private int disDownCount=0,disUpCount=0;
+    //private int disDownCount=0,disUpCount=0;
     private float x, y,x1,y1;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -72,36 +72,30 @@ public class Backgroud extends FrameLayout {
             case MotionEvent.ACTION_DOWN:
                 x1 = event.getX();
                 y1 = event.getY();
-                if (disDownCount>0){
-                    disDownCount--;
-                    if (isClickThrough){
-                        return super.onTouchEvent(event);
-                    }else {
-                        return true;
-                    }
 
+                if (isClickThrough){
+                    return super.onTouchEvent(event);
+                }else {
+                    return true;
                 }
-                break;
+
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if (disUpCount>0){
-                    if (x1==event.getX()&&y1==event.getY()){
-                        mOnBack.onback();
-                    }
-                    disUpCount--;
-                    if (isClickThrough){
-                        return super.onTouchEvent(event);
-                    }else {
-                        return true;
-                    }
+                if (x1==event.getX()&&y1==event.getY()){
+                    mOnBack.onback();
                 }
-                break;
+
+                if (isClickThrough){
+                    return super.onTouchEvent(event);
+                }else {
+                    return true;
+                }
+
         }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 x = event.getX();
                 y = event.getY();
-                disDownCount++;
                 post(()-> ((Activity) getContext()).dispatchTouchEvent(event));
 
 
@@ -110,7 +104,6 @@ public class Backgroud extends FrameLayout {
             case MotionEvent.ACTION_CANCEL:
                 if (Math.abs(x-event.getX())<8&&Math.abs(y-event.getY())<8){
                     mOnBack.onback();
-                    disUpCount++;
                     post(()-> ((Activity) getContext()).dispatchTouchEvent(event));
                 }
 
