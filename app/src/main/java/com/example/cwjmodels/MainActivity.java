@@ -1,24 +1,21 @@
 package com.example.cwjmodels;
 
 import android.os.Bundle;
+import android.view.Menu;
 
-import com.example.basepop.basepop.base.photoViewerDialog.ImageDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.ui.AppBarConfiguration;
+
+import com.example.basepop.photoViewerDialog.ImageDialog;
+import com.example.cwjmodels.databinding.ActivityMainBinding;
 import com.example.cwjmodels.dialogs.Attach;
 import com.example.cwjmodels.dialogs.Bottom;
 import com.example.cwjmodels.dialogs.BottomAnDialog;
 import com.example.cwjmodels.dialogs.BottomChat;
 import com.example.cwjmodels.dialogs.Center;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.navigation.ui.AppBarConfiguration;
-
-import com.example.cwjmodels.databinding.ActivityMainBinding;
 import com.example.cwjmodels.dialogs.CenterBottom;
 import com.example.cwjmodels.dialogs.CenterEdit;
 import com.example.cwjmodels.dialogs.Top;
-
-import android.view.Menu;
 
 public class MainActivity extends AppCompatActivity {
 

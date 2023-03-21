@@ -1,0 +1,46 @@
+package com.example.basepop.base;
+
+
+
+import android.app.Dialog;
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+
+/*
+* author:cwj
+* phone:18879224388
+* 若不想全面屏可以继承这个类
+* 在onCreate()里面执行serContentView(mBase);而不是直接加到父容器
+* 执行 show() dismiss();
+* */
+
+public abstract class BasePop2 extends Dialog {
+    protected Background mBase;  //父容器
+
+    public BasePop2(@NonNull Context context) {
+        super(context, com.example.basepop.R.style._XPopup_TransparentDialog);
+
+    }
+
+    protected abstract void beforeShow();
+    protected abstract void beforeDismiss();
+    protected abstract void onDismiss();
+    protected abstract int getImplLayoutId();
+    public void animateShow() {
+        show();
+    }
+    public void animateDismiss() {
+        dismiss();
+    }
+
+
+
+    public void destroy(){
+
+    }
+
+    public Background getBasePop() {
+        return mBase;
+    }
+}

@@ -2,7 +2,7 @@ package com.example.cwjmodels.dialogs;
 
 import android.app.Activity;
 
-import com.example.basepop.basepop.base.BasePopChat;
+import com.example.basepop.BasePopChat;
 import com.example.cwjmodels.R;
 
 public class BottomChat extends BasePopChat {
@@ -22,4 +22,6 @@ public class BottomChat extends BasePopChat {
     protected int getImplLayoutId() {
         return R.layout.dialog_bottom_chat;
     }
+
+
 }

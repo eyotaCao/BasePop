@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import androidx.annotation.NonNull;
 
-import com.example.basepop.basepop.base.BasePopCenterBottom;
+import com.example.basepop.BasePopCenterBottom;
 import com.example.cwjmodels.R;
 
 public class CenterBottom extends BasePopCenterBottom {

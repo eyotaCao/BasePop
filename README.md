@@ -69,7 +69,7 @@ demo app可以下载体验: [demo](https://www.pgyer.com/Mgqc)
 ```
 import android.app.Activity;
 import androidx.annotation.NonNull;
-import com.example.basepop.basepop.base.BasePopCenter;
+package com.example.basepop.BasePopCenter;
 import com.example.cwjmodels.R;
 
 public class Center extends BasePopCenter2 {
