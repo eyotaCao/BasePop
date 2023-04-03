@@ -1,5 +1,8 @@
 package com.example.basepop;
 
+import static com.example.basepop.base.BasePopConstants.SHOW_STATE_DISMISS;
+import static com.example.basepop.base.BasePopConstants.SHOW_STATE_DISMISSING;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
@@ -7,7 +10,6 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +22,6 @@ import android.widget.ScrollView;
 import androidx.core.widget.NestedScrollView;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
-import com.example.basepop.base.BackgroundView;
 import com.example.basepop.base.BasePop;
 import com.example.basepop.base.BasePopConstants;
 import com.example.basepop.base.container.ContainerBottom;
@@ -44,11 +45,12 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
     private int l,t,r,b;
     private NestedScrollView mScroll2;
 
+    private float scrollP = 1;
+
     //contentAnimate
     private int  oldHeight,maxHeight=0;  //初始高度
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
-    private final int startColor = Color.TRANSPARENT;
     private final boolean isZeroDuration = false;
     private boolean isConScrollAble=true;
 
@@ -67,7 +69,7 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mContent= LayoutInflater.from(activity).inflate(layout,mBase,false);
         mContainer=new ContainerBottom(activity,isConScrollAble);
-        mContainer.setOnback(this::dismiss);
+        mContainer.setOnback(this::dismiss2);
         FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         flp.gravity= Gravity.BOTTOM;
         try {
@@ -85,15 +87,12 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
         mContainer.setLayoutParams(flp);
         mContainer.setMaxHeight(maxHeight);
         mContainer.addView(mContent);
-        mBaseView=new BackgroundView(activity);
-
-        mBaseView.setOnback(this::dismiss);
-        FrameLayout.LayoutParams flp2=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mBaseView.setLayoutParams(flp2);
-
+        mBase.addView(mContainer);  //弹窗内容
         mContainer.setOnScrollLis(percent -> {
-            mBaseView.setBackgroundColor((Integer) argbEvaluator.evaluate(Math.abs(percent),startColor,shadowBgColor));
+            scrollP = percent;
+            mBaseView.setBackgroundColor((Integer) argbEvaluator.evaluate(percent , startColor, shadowBgColor));
         });
+
         if (isAutoEdit){
             try {
 
@@ -148,7 +147,8 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
                 .withLayer()
                 .start();
 
-        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, startColor);
+        int colorStartTemp = (Integer) argbEvaluator.evaluate(scrollP , startColor, shadowBgColor);
+        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, colorStartTemp);
         animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -160,6 +160,30 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
         animator.setDuration(isZeroDuration?0:animationDuration).start();
+    }
+
+    public void animateDismiss2() {
+
+        if (myPopListener !=null){
+            myPopListener.onDismiss();
+        }
+        mContainer.post(()->{
+            try {
+                mParent.removeView(mBase);
+            }catch (Exception ignore){}
+        });
+    }
+
+    /**
+     * 关闭弹窗
+     */
+    public void dismiss2(){
+        if (showState == SHOW_STATE_DISMISSING || showState == SHOW_STATE_DISMISS){
+            return;
+        }
+        showState = SHOW_STATE_DISMISSING;
+        beforeDismiss();
+        animateDismiss2();
     }
 
     public <T extends View> T findViewById(int id){

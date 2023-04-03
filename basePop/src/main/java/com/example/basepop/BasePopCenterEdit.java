@@ -6,7 +6,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.res.Resources;
-import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +18,6 @@ import android.widget.FrameLayout;
 
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
-import com.example.basepop.base.BackgroundView;
 import com.example.basepop.base.BasePop;
 import com.example.basepop.base.BasePopConstants;
 import com.example.basepop.base.container.Container;
@@ -31,8 +30,6 @@ import java.util.List;
 
 //中心弹框  中心弹出动画 有编辑框自动弹起
 public abstract class BasePopCenterEdit extends BasePop<Container> {
-    protected BackgroundView mBaseView; //阴影背景
-    protected ViewGroup mParent;
     protected boolean isShow=false,isShowBg=true,isAutoEdit=false;
     //contentAnimate
     float startScale = .75f;
@@ -40,7 +37,6 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
     //private int needTop,screenHeight;
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
-    private final int startColor = Color.TRANSPARENT;
     private final boolean isZeroDuration = false;
     private boolean isConScrollAble=false;
 
@@ -72,7 +68,7 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
         mContainer.setMaxHeight(maxHeight);
         mContainer.setMaxWidth(maxWidth);
         mContainer.addView(mContent);
-
+        mBase.addView(mContainer);
         if (isAutoEdit){
             try {
                 initAutoEdit();
@@ -173,6 +169,7 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
+                Log.i("dasda","dsds");
                 showState = BasePopConstants.SHOW_STATE_DISMISS;
                 try {
                     mParent.removeView(mBase);

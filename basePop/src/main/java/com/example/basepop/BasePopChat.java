@@ -20,7 +20,6 @@ import androidx.transition.ChangeTransform;
 import androidx.transition.TransitionManager;
 import androidx.transition.TransitionSet;
 
-import com.example.basepop.base.BackgroundView;
 import com.example.basepop.base.BasePop;
 import com.example.basepop.base.BasePopConstants;
 import com.example.basepop.base.container.ContainerBottom;
@@ -31,8 +30,6 @@ import com.example.basepop.utils.ViewUtils;
 
 //底部弹框 直接弹出
 public abstract class BasePopChat extends BasePop<ContainerBottom> {
-    protected BackgroundView mBaseView; //阴影背景
-    protected ViewGroup mParent;
     protected boolean isShow=false;
     protected boolean isAutoEdit=false;
     private InputMethodManager imm;
@@ -92,6 +89,7 @@ public abstract class BasePopChat extends BasePop<ContainerBottom> {
         mContainer.setLayoutParams(flp);
         mContainer.setMaxHeight(maxHeight);
         mContainer.addView(mContent);
+        mBase.addView(mContainer);
     }
 
     public void initAnimator() {

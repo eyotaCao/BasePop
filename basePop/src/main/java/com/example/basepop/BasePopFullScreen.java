@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 
-import com.example.basepop.base.BackgroundView;
 import com.example.basepop.base.BasePop;
 import com.example.basepop.base.BasePopConstants;
 import com.example.basepop.base.container.Container;
@@ -20,8 +19,6 @@ import com.example.basepop.utils.FastOutSlowInInterpolator;
 
 //全屏弹窗
 public abstract class BasePopFullScreen extends BasePop<Container> {
-    protected BackgroundView mBaseView; //阴影背景
-    protected ViewGroup mParent;
     protected boolean isShow=false;
     //contentAnimate
     float startScale = 0;
@@ -53,7 +50,7 @@ public abstract class BasePopFullScreen extends BasePop<Container> {
         mContainer.setMaxHeight(maxHeight);
         mContainer.setMaxWidth(maxWidth);
         mContainer.addView(mContent);
-
+        mBase.addView(mContainer);
     }
 
 

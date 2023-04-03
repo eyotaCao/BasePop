@@ -7,7 +7,6 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import android.widget.FrameLayout;
 
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
-import com.example.basepop.base.BackgroundView;
 import com.example.basepop.base.BasePop;
 import com.example.basepop.base.BasePopConstants;
 import com.example.basepop.base.container.Container;
@@ -26,8 +24,6 @@ import com.example.basepop.utils.ViewUtils;
 
 //头部弹框
 public abstract class BasePopTop extends BasePop<Container> {
-    protected BackgroundView mBaseView; //阴影背景
-    protected ViewGroup mParent;
     protected View attachView;
     protected boolean isShow=false;
     protected boolean isMove=false;
@@ -35,7 +31,6 @@ public abstract class BasePopTop extends BasePop<Container> {
     private int  oldHeight,maxHeight=0;  //初始高度
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
-    private final int startColor = Color.TRANSPARENT;
     private final boolean isZeroDuration = false;
     private boolean isConScrollAble=false;
     private boolean isContentCenter=false;
@@ -69,7 +64,7 @@ public abstract class BasePopTop extends BasePop<Container> {
                     Gravity.CENTER_HORIZONTAL));
         }
         mContainer.addView(mContent);
-
+        mBase.addView(mContainer);
     }
 
     public void initAnimator() {

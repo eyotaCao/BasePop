@@ -38,6 +38,8 @@ public abstract class BasePop <T extends ViewGroup> {
 
     protected static final int animationDuration = 280; //弹窗打开/关闭动画时长
 
+    protected final int startColor = Color.TRANSPARENT;  //弹窗开始背景颜色
+
     protected int shadowBgColor = Color.parseColor("#7F000000");  //弹窗背景颜色
 
     protected boolean dismissTouchOutside = true;  //点击弹窗外是否关闭弹窗
@@ -85,7 +87,6 @@ public abstract class BasePop <T extends ViewGroup> {
         mBaseView.setLayoutParams(flp2);
 
         mBase.addView(mBaseView);  //背景
-        mBase.addView(mContainer);  //弹窗内容
 
         mParent =(FrameLayout) activity.getWindow().getDecorView();
         mParent.addView(mBase);
@@ -148,22 +149,22 @@ public abstract class BasePop <T extends ViewGroup> {
         return 0;
     };
 
-    public BasePop setClickThrough(boolean clickThrough) {
+    public BasePop<T> setClickThrough(boolean clickThrough) {
         isClickThrough = clickThrough;
         return this;
     }
 
-    public BasePop setDismissOnBack(boolean dismissOnBack) {
+    public BasePop<T> setDismissOnBack(boolean dismissOnBack) {
         this.dismissOnBack = dismissOnBack;
         return this;
     }
 
-    public BasePop setPopListener(BasePopListener myPopListener) {
+    public BasePop<T> setPopListener(BasePopListener myPopListener) {
         this.myPopListener = myPopListener;
         return this;
     }
 
-    public BasePop setDismissTouchOutside(boolean dismissTouchOutside) {
+    public BasePop<T> setDismissTouchOutside(boolean dismissTouchOutside) {
         this.dismissTouchOutside = dismissTouchOutside;
         return this;
     }

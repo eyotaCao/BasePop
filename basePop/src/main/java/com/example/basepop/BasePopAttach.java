@@ -24,8 +24,6 @@ import com.example.basepop.utils.ViewUtils;
 
 //依附于某个view弹窗
 public abstract class BasePopAttach extends BasePop<Container> {
-    protected BackgroundView mBaseView; //阴影背景
-    protected ViewGroup mParent;
     protected View mAttachView;
     protected boolean isShow=false,isShowBg=true;
     //contentAnimate
@@ -36,7 +34,6 @@ public abstract class BasePopAttach extends BasePop<Container> {
 
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
-    private final int startColor = Color.TRANSPARENT;
     private final boolean isZeroDuration = false;
     private boolean isConScrollAble=false;
 
@@ -71,6 +68,8 @@ public abstract class BasePopAttach extends BasePop<Container> {
         mContainer.setMaxHeight(maxHeight);
         mContainer.setMaxWidth(maxWidth);
         mContainer.addView(mContent);
+        mBase.addView(mContainer);  //弹窗内容
+
     }
 
     public void initAnimator() {

@@ -6,7 +6,6 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.widget.FrameLayout;
 
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
-import com.example.basepop.base.BackgroundView;
 import com.example.basepop.base.BasePop;
 import com.example.basepop.base.BasePopConstants;
 import com.example.basepop.base.container.Container;
@@ -24,14 +22,11 @@ import com.example.basepop.utils.PxTool;
 
 //中心弹框  中心弹出动画
 public abstract class BasePopCenter extends BasePop<Container> {
-    protected BackgroundView mBaseView; //阴影背景
-    protected ViewGroup mParent;
     protected boolean isShow=false,isShowBg=true;
     //contentAnimate
     float startScale = .75f;
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
-    private final int startColor = Color.TRANSPARENT;
     private final boolean isZeroDuration = false;
     private boolean isConScrollAble=false;
 
@@ -62,13 +57,15 @@ public abstract class BasePopCenter extends BasePop<Container> {
             flp.gravity=Gravity.CENTER;
             mContainer.setLayoutParams(flp);
         }catch (Exception ignored){}
-        FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         flp.gravity= Gravity.CENTER;
         mContainer.setLayoutParams(flp);
         //mContainer.setBackgroundColor(getResources().getColor(R.color.color2866FE));
         mContainer.setMaxHeight(maxHeight);
         mContainer.setMaxWidth(maxWidth);
         mContainer.addView(mContent);
+        mBase.addView(mContainer);  //弹窗内容
+
     }
 
     public void initAnimator() {
@@ -127,7 +124,6 @@ public abstract class BasePopCenter extends BasePop<Container> {
                 try {
                     mParent.removeView(mBase);
                 }catch (Exception ignored){}
-
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());

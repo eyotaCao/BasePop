@@ -30,7 +30,6 @@ import androidx.transition.TransitionSet;
 
 import com.bumptech.glide.Glide;
 import com.example.basepop.R;
-import com.example.basepop.base.BackgroundView;
 import com.example.basepop.base.BasePop;
 import com.example.basepop.base.BasePopConstants;
 import com.example.basepop.utils.PxTool;
@@ -43,8 +42,6 @@ import java.util.Locale;
  */
 public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
     protected int layout;
-    protected BackgroundView mBaseView; //阴影背景
-    protected ViewGroup mParent;
     protected ImageView srcView;
     protected PhotoView mPhoto;
     private String url;
@@ -54,7 +51,6 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
 
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
-    private final int startColor = Color.TRANSPARENT;
     private final boolean isZeroDuration = false;
 
     private LoadImage loadImage;
@@ -117,6 +113,7 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
         mContainer.setMaxWidth(maxWidth);*/
         mContainer.setClipChildren(false);
         mContainer.addView(mContent);
+        mBase.addView(mContainer);
     }
 
     public void initAnimator() {
