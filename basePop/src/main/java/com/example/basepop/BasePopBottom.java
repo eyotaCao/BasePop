@@ -147,8 +147,7 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
                 .withLayer()
                 .start();
 
-        int colorStartTemp = (Integer) argbEvaluator.evaluate(scrollP , startColor, shadowBgColor);
-        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, colorStartTemp);
+        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, startColor);
         animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
