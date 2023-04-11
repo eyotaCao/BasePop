@@ -6,7 +6,6 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.FrameLayout;
 
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
-import com.example.basepop.base.BackgroundView;
 import com.example.basepop.base.BasePop;
 import com.example.basepop.base.BasePopConstants;
 import com.example.basepop.base.container.Container;
@@ -85,7 +83,7 @@ public abstract class BasePopAttach extends BasePop<Container> {
         }
         int []loc= ViewUtils.getLocation(mAttachView);
 
-        int screenH= PxTool.getWindowHeight();
+        int screenH= PxTool.getScreenHeight();
         int screenW=PxTool.getScreenWidth();
         int width=mAttachView.getWidth();
         int height=mAttachView.getHeight();

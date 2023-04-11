@@ -39,7 +39,7 @@ public abstract class BasePopCenterBottom extends BasePop<Container> {
 
     protected void onCreate(){  //加入弹窗
         super.onCreate();
-        screenHeight= PxTool.getWindowHeight();
+        screenHeight= PxTool.getScreenHeight();
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mContent= LayoutInflater.from(activity).inflate(layout,mBase,false);
         mContainer=new Container(activity,isConScrollAble);
@@ -57,6 +57,7 @@ public abstract class BasePopCenterBottom extends BasePop<Container> {
     public void initAnimator() {
         //contentAnimate
         int oldHeight = ViewUtils.getMaxHeight(mContainer);
+
         mContainer.setTranslationY(screenHeight);
         needTop=(int)((float)(screenHeight- oldHeight)/2f);
     }

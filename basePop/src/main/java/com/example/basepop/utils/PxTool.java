@@ -3,6 +3,7 @@ package com.example.basepop.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
@@ -27,7 +28,7 @@ public class PxTool {
     @SuppressLint("StaticFieldLeak")
     public static Context mContext;
     public static float scale ;
-    public static int windowHeight;
+    public static int screenHeight;
     public static int screenWidth;
 
     @SuppressLint("PrivateApi")
@@ -56,7 +57,11 @@ public class PxTool {
         scale = mContext.getResources().getDisplayMetrics().density;
         int []wh=getScreenSize(context);
         screenWidth=wh[0];
-        windowHeight =wh[1];
+        screenHeight =wh[1];
+    }
+
+    public static int getWindowHeight(Activity activity) {
+        return activity.getWindow().getDecorView().getMeasuredHeight();
     }
 
     /**
@@ -96,6 +101,11 @@ public class PxTool {
             return true;
         }
 
+    }
+
+    public int getNavHeight(Resources resources) {
+        int resourceId=resources.getIdentifier("navigation_bar_height","dimen","android");
+        return resources.getDimensionPixelSize(resourceId);
     }
 
     /**
@@ -151,8 +161,8 @@ public class PxTool {
         return !hasMenuKey & !hasBackKey;
     }
 
-    public static int getWindowHeight(){
-        return (int) windowHeight;
+    public static int getScreenHeight(){
+        return (int) screenHeight;
     }
 
     public static int[] getWindowWidthAndHeight(Activity activity){

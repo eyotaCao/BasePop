@@ -113,7 +113,7 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
     private void initAutoEdit(){
         mEdits=new ArrayList<>();
         traversalView(mContainer);
-        int screenHei= PxTool.getWindowHeight();
+        int screenHei= PxTool.getScreenHeight();
         SoftUtils.addSoftListener(activity, (change, isShow) -> {
             if (isShow){
                 if (mEdits.size()>0){

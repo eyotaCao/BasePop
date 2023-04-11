@@ -89,6 +89,9 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
         mContainer.addView(mContent);
         mBase.addView(mContainer);  //弹窗内容
         mContainer.setOnScrollLis(percent -> {
+            if (percent < 0) {
+                return;
+            }
             scrollP = percent;
             mBaseView.setBackgroundColor((Integer) argbEvaluator.evaluate(percent , startColor, shadowBgColor));
         });
@@ -240,7 +243,7 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
     private void initAutoEdit(){
         mEdits=new ArrayList<>();
         final boolean[] isChange = {false};
-        int screenHei= PxTool.getWindowHeight();
+        int screenHei= PxTool.getScreenHeight();
         SoftUtils.addSoftListener(activity, (change, isShow) -> {
             if (isShow){
                 if (mContent.getMeasuredHeight()<change||mScrollChild==null){
