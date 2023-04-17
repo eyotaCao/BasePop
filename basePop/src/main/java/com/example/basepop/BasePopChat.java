@@ -49,7 +49,6 @@ public abstract class BasePopChat extends BasePop<ContainerBottom> {
 
     public BasePopChat(Activity activity){
         super(activity);
-        this.activity =activity;
         setLayout(getImplLayoutId());
     }
 

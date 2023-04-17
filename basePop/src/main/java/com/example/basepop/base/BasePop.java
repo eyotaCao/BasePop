@@ -21,7 +21,6 @@ import com.example.basepop.utils.PxTool;
  * @author cwj
  */
 public abstract class BasePop <T extends ViewGroup> {
-
     protected Activity activity;  //依附的活动
 
     protected Background mBase;  //父容器
@@ -87,8 +86,8 @@ public abstract class BasePop <T extends ViewGroup> {
         mBaseView.setLayoutParams(flp2);
 
         mBase.addView(mBaseView);  //背景
-
-        mParent =(FrameLayout) activity.getWindow().getDecorView();
+        //(FrameLayout) activity.findViewById(android.R.id.content);
+        mParent = (FrameLayout) activity.getWindow().getDecorView();
         mParent.addView(mBase);
         isCreate=true;
     }

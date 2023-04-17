@@ -46,8 +46,11 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
     protected PhotoView mPhoto;
     private String url;
     private Rect rect;
-    protected boolean isShow=false,isShowBg=true;
+    protected boolean isShow=false,isShowBg=true, isAboveNavi = false;
     //contentAnimate
+
+    protected static final int animationDuration = 480; //弹窗打开/关闭动画时长
+
 
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
@@ -58,7 +61,6 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
 
     public BasePopImage(Activity activity){
         super(activity);
-        this.activity =activity;
         setLayout(getImplLayoutId());
     }
 
@@ -77,8 +79,20 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mContent= LayoutInflater.from(activity).inflate(layout,mBase,false);
       //  mContent.setBackgroundColor(getResources().getColor(R.color.color2866FE));
+
         mContainer=new PhotoViewContainer(activity);
         setPhoto(mContent.findViewById(R.id.dialog_image_photo));
+        if (isAboveNavi) {
+            try {
+                int resourceId=getResources().getIdentifier("navigation_bar_height","dimen","android");
+                int height = getResources().getDimensionPixelSize(resourceId);
+                FrameLayout.LayoutParams flpBa=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+                flpBa.bottomMargin=height;
+                mBase.setLayoutParams(flpBa);
+            }catch (Exception ignored){}
+        }
+
         if (mPhoto!=null){
             if (srcView !=null){
                 mPhoto.setImageDrawable(srcView.getDrawable());
@@ -117,7 +131,7 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
     }
 
     public void initAnimator() {
-        if (srcView != null) {
+        if (srcView != null && activity != null) {
             int[] locations = ViewUtils.getLocation(srcView);
             if(isLayoutRtl(activity)){
                 int left = -(PxTool.getWindowWidthAndHeight(activity)[0] - locations[0] - srcView.getWidth());
@@ -254,8 +268,10 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
         float screenWidth = (float) PxTool.screenWidth;
         mPhoto.setScaleX((float) (rect.width()) / screenWidth);
         mPhoto.setScaleY((float) (rect.width())/ screenWidth);
-        mPhoto.setTranslationX(-(float)(screenWidth-rect.width())/2f-rect.left);
-        mPhoto.setTranslationY(-(float)((mParent.getMeasuredHeight()-rect.height())/2f-rect.top));
+        float tranX = -(float)(screenWidth-rect.width())/2f-rect.left;
+        float tranY = -(float)((mParent.getMeasuredHeight()-rect.height())/2f-rect.top);
+        mPhoto.setTranslationX(tranX);
+        mPhoto.setTranslationY(tranY);
     }
 
 

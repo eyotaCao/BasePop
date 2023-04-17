@@ -27,7 +27,6 @@ public abstract class BasePopFullScreen extends BasePop<Container> {
 
     public BasePopFullScreen(Activity activity){
         super(activity);
-        this.activity =activity;
         setLayout(getImplLayoutId());
     }
 

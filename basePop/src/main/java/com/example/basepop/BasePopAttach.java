@@ -41,7 +41,6 @@ public abstract class BasePopAttach extends BasePop<Container> {
 
     public BasePopAttach(Activity activity){
         super(activity);
-        this.activity =activity;
         setLayout(getImplLayoutId());
     }
 

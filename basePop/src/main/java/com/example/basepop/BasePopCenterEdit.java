@@ -42,7 +42,6 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
 
     public BasePopCenterEdit(Activity activity){
         super(activity);
-        this.activity =activity;
         setLayout(getImplLayoutId());
     }
 
