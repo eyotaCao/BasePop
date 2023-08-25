@@ -135,6 +135,10 @@ public abstract class BasePop {
         return mBase;
     }
 
+    public Activity getActivity() {
+        return activity;
+    }
+
     private void create() {
         maxHeight = getMaxHeight();
         mBase = new Background(activity, () -> {
