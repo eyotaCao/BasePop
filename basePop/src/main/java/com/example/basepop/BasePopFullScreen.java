@@ -18,12 +18,14 @@ import com.example.basepop.utils.FastOutSlowInInterpolator;
 
 
 //全屏弹窗
-public abstract class BasePopFullScreen extends BasePop<Container> {
+public abstract class BasePopFullScreen extends BasePop {
     protected boolean isShow = false;
     //contentAnimate
     float startScale = 0;
 
     private boolean isConScrollAble = false;
+
+    private Container mContainer;
 
     public BasePopFullScreen(Activity activity) {
         super(activity);
@@ -59,45 +61,41 @@ public abstract class BasePopFullScreen extends BasePop<Container> {
 
     public void animateShow() {
 
-        if (myPopListener != null) {
-            myPopListener.onShow();
-        }
+  
 
         mContainer.animate().alpha(1f)
-            .setDuration(animationDuration).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    showState = BasePopConstants.SHOW_STATE_SHOW;
-                }
-            })
-            .setInterpolator(new OvershootInterpolator(1f))
+                .setDuration(animationDuration).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        showState = BasePopConstants.SHOW_STATE_SHOW;
+                    }
+                })
+                .setInterpolator(new OvershootInterpolator(1f))
 //                .withLayer() 在部分6.0系统会引起crash
-            .start();
+                .start();
 
 
     }
 
     public void animateDismiss() {
 
-        if (myPopListener != null) {
-            myPopListener.onDismiss();
-        }
+        
         mContainer.animate().alpha(0f).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    showState = BasePopConstants.SHOW_STATE_DISMISS;
-                    try {
-                        mParent.removeView(mBase);
-                    } catch (Exception ignored) {
-                    }
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        showState = BasePopConstants.SHOW_STATE_DISMISS;
+                        try {
+                            mParent.removeView(mBase);
+                        } catch (Exception ignored) {
+                        }
 
-                }
-            }).setDuration(animationDuration)
-            .setInterpolator(new FastOutSlowInInterpolator())
+                    }
+                }).setDuration(animationDuration)
+                .setInterpolator(new FastOutSlowInInterpolator())
 //                .withLayer() 在部分6.0系统会引起crash
-            .start();
+                .start();
 
     }
 
@@ -137,16 +135,12 @@ public abstract class BasePopFullScreen extends BasePop<Container> {
     }
 
     public void beforeShow() {   //弹窗显示之前执行
-        if (myPopListener != null) {
-            myPopListener.beforeShow();
-        }
+     
         initAnimator();
     }
 
     public void beforeDismiss() {
-        if (myPopListener != null) {
-            myPopListener.beforeDismiss();
-        }
+      
     }
 
     protected void onDismiss() {

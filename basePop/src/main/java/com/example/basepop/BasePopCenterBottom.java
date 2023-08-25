@@ -22,7 +22,7 @@ import com.example.basepop.utils.PxTool;
 import com.example.basepop.utils.ViewUtils;
 
 //中心弹框 从底部弹出
-public abstract class BasePopCenterBottom extends BasePop<Container> {
+public abstract class BasePopCenterBottom extends BasePop {
 
     private int maxHeight = 0;  //初始高度
     private int needTop, screenHeight;
@@ -30,6 +30,7 @@ public abstract class BasePopCenterBottom extends BasePop<Container> {
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final boolean isZeroDuration = false;
     private boolean isConScrollAble = false;
+    private Container mContainer;
 
     public BasePopCenterBottom(Activity activity) {
         super(activity);
@@ -62,18 +63,16 @@ public abstract class BasePopCenterBottom extends BasePop<Container> {
 
     public void animateShow() {
 
-        if (myPopListener != null) {
-            myPopListener.onShow();
-        }
+  
         ViewPropertyAnimator animator2;
         animator2 = mContainer.animate().translationY(needTop);
         if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
-            .setDuration(animationDuration)
-            //  .withLayer()
-            .start();
+                .setDuration(animationDuration)
+                //  .withLayer()
+                .start();
 
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor, shadowBgColor);
-        animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
+        animator.addUpdateListener(animation -> mBase.setBackgroundColor((Integer) animation.getAnimatedValue()));
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -87,18 +86,16 @@ public abstract class BasePopCenterBottom extends BasePop<Container> {
 
     public void animateDismiss() {
 
-        if (myPopListener != null) {
-            myPopListener.onDismiss();
-        }
+        
         ViewPropertyAnimator animator2;
         animator2 = mContainer.animate().translationY(screenHeight);
         if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
-            .setDuration(animationDuration)
-            .withLayer()
-            .start();
+                .setDuration(animationDuration)
+                .withLayer()
+                .start();
 
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, startColor);
-        animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
+        animator.addUpdateListener(animation -> mBase.setBackgroundColor((Integer) animation.getAnimatedValue()));
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -144,16 +141,12 @@ public abstract class BasePopCenterBottom extends BasePop<Container> {
 
 
     public void beforeShow() {   //弹窗显示之前执行
-        if (myPopListener != null) {
-            myPopListener.beforeShow();
-        }
+     
         initAnimator();
     }
 
     public void beforeDismiss() {
-        if (myPopListener != null) {
-            myPopListener.beforeDismiss();
-        }
+      
     }
 
 }

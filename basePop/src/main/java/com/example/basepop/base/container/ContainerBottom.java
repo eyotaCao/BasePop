@@ -86,7 +86,7 @@ public class ContainerBottom extends FrameLayout {
             if (onScrollLis != null) {
                 onScrollLis.onScroll(((float) mHeight - getTranslationY()) / mHeight);
                 if ((Float) animator.getAnimatedValue() == mHeight && mOnBack != null) {
-                    mOnBack.onback();
+                    postDelayed(()-> mOnBack.onback(), 200);
                 }
             }
         });

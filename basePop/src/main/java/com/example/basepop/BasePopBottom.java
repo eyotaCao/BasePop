@@ -1,8 +1,5 @@
 package com.example.basepop;
 
-import static com.example.basepop.base.BasePopConstants.SHOW_STATE_DISMISS;
-import static com.example.basepop.base.BasePopConstants.SHOW_STATE_DISMISSING;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
@@ -10,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,13 +31,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 //底部弹框 有输入框自动弹起
-public abstract class BasePopBottom extends BasePop<ContainerBottom> {
+public abstract class BasePopBottom extends BasePop {
     protected boolean isShow = false;
     //是否自动调整弹窗位置
     protected boolean isAutoEdit = false;
+
     private List<EditText> mEdits;
+
     private ScrollView mScroll;
+
     private ViewGroup mScrollChild;
+
+    private ContainerBottom mContainer;
     //是否显示导航栏
     private boolean isShowNavi = false;
     private int l, t, r, b;
@@ -48,13 +51,16 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
     private int oldHeight, maxHeight = 0;  //初始高度
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+
     private final boolean isZeroDuration = false;
+
     private boolean isConScrollAble = true;
+
+    private int mTempColor;
 
     public BasePopBottom(Activity activity) {
         super(activity);
     }
-
 
     public void setLayout(int layout) {
         this.layout = layout;
@@ -62,10 +68,11 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
 
     @Override
     protected void onCreate() {  //加入弹窗
-        mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mContent = LayoutInflater.from(activity).inflate(layout, mBase, false);
         mContainer = new ContainerBottom(activity, isConScrollAble);
-        mContainer.setOnback(this::dismiss2);
+        mContainer.setOnback(() -> {
+            dismiss();
+        });
         FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         flp.gravity = Gravity.BOTTOM;
         try {
@@ -73,10 +80,12 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
             int height = getResources().getDimensionPixelSize(resourceId);
             if (isShowNavi) {
                 FrameLayout.LayoutParams flpBa = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
+                        ViewGroup.LayoutParams.MATCH_PARENT);
                 flpBa.bottomMargin = height;
                 mBase.setLayoutParams(flpBa);
             } else {
+                mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
                 mContent.setPadding(0, 0, 0, height);
             }
         } catch (Exception ignored) {
@@ -89,7 +98,7 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
             if (percent < 0) {
                 return;
             }
-            mBaseView.setBackgroundColor((Integer) argbEvaluator.evaluate(percent, startColor, shadowBgColor));
+            mBase.setBackgroundColor((Integer) argbEvaluator.evaluate(percent, startColor, shadowBgColor));
         });
 
         if (isAutoEdit) {
@@ -108,19 +117,15 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
     }
 
     public void animateShow() {
-
-        if (myPopListener != null) {
-            myPopListener.onShow();
-        }
         mContainer.setTranslationY(0);
         ViewPropertyAnimator animator2;
         animator2 = mContent.animate().translationY(0);
         if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
-            .setDuration(animationDuration)
-            .start();
+                .setDuration(animationDuration)
+                .start();
 
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor, shadowBgColor);
-        animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
+        animator.addUpdateListener(animation -> mBase.setBackgroundColor((Integer) animation.getAnimatedValue()));
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -134,54 +139,23 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
     }
 
     public void animateDismiss() {
-
-        if (myPopListener != null) {
-            myPopListener.onDismiss();
-        }
         ViewPropertyAnimator animator2;
         animator2 = mContent.animate().translationY(oldHeight);
         if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
-            .setDuration(animationDuration)
-            .withLayer()
-            .start();
-
-        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, startColor);
-        animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
+                .setDuration(animationDuration)
+                .withLayer()
+                .start();
+        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, mTempColor, startColor);
+        animator.addUpdateListener(animation -> mBase.setBackgroundColor((Integer) animation.getAnimatedValue()));
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-
                 mParent.removeView(mBase);
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
         animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
-    }
-
-    public void animateDismiss2() {
-
-        if (myPopListener != null) {
-            myPopListener.onDismiss();
-        }
-        mContainer.post(() -> {
-            try {
-                mParent.removeView(mBase);
-            } catch (Exception ignore) {
-            }
-        });
-    }
-
-    /**
-     * 关闭弹窗
-     */
-    public void dismiss2() {
-        if (showState == SHOW_STATE_DISMISSING || showState == SHOW_STATE_DISMISS) {
-            return;
-        }
-        showState = SHOW_STATE_DISMISSING;
-        beforeDismiss();
-        animateDismiss2();
     }
 
     public <T extends View> T findViewById(int id) {
@@ -213,9 +187,7 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
     }
 
     public void beforeShow() {   //弹窗显示之前执行
-        if (myPopListener != null) {
-            myPopListener.beforeShow();
-        }
+        mTempColor = shadowBgColor;
         initAnimator();
     }
 
@@ -231,11 +203,8 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
     }
 
     public void beforeDismiss() {
-        if (myPopListener != null) {
-            myPopListener.beforeDismiss();
-        }
+        mTempColor = ((ColorDrawable) mBase.getBackground()).getColor();
     }
-
 
     private void initAutoEdit() {
         mEdits = new ArrayList<>();
@@ -313,7 +282,6 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
         }
     }
 
-
     public ViewGroup getBase() {
         return mBase;
     }
@@ -321,5 +289,4 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
     public ContainerBottom getmContainer() {
         return mContainer;
     }
-
 }

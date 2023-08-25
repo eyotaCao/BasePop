@@ -21,9 +21,9 @@ import com.example.basepop.utils.PxTool;
 import com.example.basepop.utils.ViewUtils;
 
 //依附于某个view弹窗
-public abstract class BasePopAttach extends BasePop<Container> {
+public abstract class BasePopAttach extends BasePop {
     protected View mAttachView;
-    protected boolean isShow = false, isShowBg = true;
+    protected boolean isShowBg = true;
     //contentAnimate
     float startScale = .75f;
     private int offsetX;
@@ -33,7 +33,8 @@ public abstract class BasePopAttach extends BasePop<Container> {
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final boolean isZeroDuration = false;
-    private boolean isConScrollAble = false;
+    private boolean isScrollAble = false;
+    private Container mContainer;
 
     public enum Animate {  //动画开始位置
         CENTER, RIGHT_TOP, RIGHT_BOTTOM, LEFT_TOP, LEFT_BOTTOM, AUTO
@@ -53,16 +54,11 @@ public abstract class BasePopAttach extends BasePop<Container> {
         if (!isShowBg) {
             shadowBgColor = R.color.transparent;
         }
-        //初始高度
-        int maxWidth = getMaxWidth();
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mContent = LayoutInflater.from(activity).inflate(layout, mBase, false);
-        mContainer = new Container(activity, isConScrollAble);
-
+        mContainer = new Container(activity, isScrollAble);
         FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mContainer.setLayoutParams(flp);
-        mContainer.setMaxHeight(maxHeight);
-        mContainer.setMaxWidth(maxWidth);
         mContainer.addView(mContent);
         mBase.addView(mContainer);  //弹窗内容
     }
@@ -169,21 +165,17 @@ public abstract class BasePopAttach extends BasePop<Container> {
 
     }
 
-
     public void animateShow() {
-
-        if (myPopListener != null) {
-            myPopListener.onShow();
-        }
+  
         mContainer.post(() -> mContainer.animate().scaleX(1f).scaleY(1f).alpha(1f)
-            .setDuration(animationDuration)
-            .setInterpolator(new OvershootInterpolator(1f))
+                .setDuration(animationDuration)
+                .setInterpolator(new OvershootInterpolator(1f))
 //                .withLayer() 在部分6.0系统会引起crash
-            .start());
+                .start());
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor, shadowBgColor);
         animator.addUpdateListener(animation -> {
             if (isShowBg) {
-                mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
+                mBase.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
@@ -199,18 +191,14 @@ public abstract class BasePopAttach extends BasePop<Container> {
     }
 
     public void animateDismiss() {
-
-        if (myPopListener != null) {
-            myPopListener.onDismiss();
-        }
         mContainer.animate().scaleX(startScale).scaleY(startScale).alpha(0f).setDuration(animationDuration)
-            .setInterpolator(new FastOutSlowInInterpolator())
+                .setInterpolator(new FastOutSlowInInterpolator())
 //                .withLayer() 在部分6.0系统会引起crash
-            .start();
+                .start();
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, startColor);
         animator.addUpdateListener(animation -> {
             if (isShowBg) {
-                mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
+                mBase.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
@@ -254,26 +242,18 @@ public abstract class BasePopAttach extends BasePop<Container> {
         return mBase.getResources();
     }
 
-    public BasePopAttach setConScrollAble(boolean conScrollAble) {
-        isConScrollAble = conScrollAble;
+    public BasePopAttach setScrollAble(boolean scrollAble) {
+        isScrollAble = scrollAble;
         return this;
     }
 
-    public boolean isShow() {
-        return isShow;
-    }
-
     public void beforeShow() {   //弹窗显示之前执行
-        if (myPopListener != null) {
-            myPopListener.beforeShow();
-        }
+     
         initAnimator();
     }
 
     public void beforeDismiss() {
-        if (myPopListener != null) {
-            myPopListener.beforeDismiss();
-        }
+      
     }
 
     public BasePopAttach setAttachView(View mAttachView) {

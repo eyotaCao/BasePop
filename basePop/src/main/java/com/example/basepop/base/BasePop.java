@@ -20,18 +20,14 @@ import com.example.basepop.utils.PxTool;
  *
  * @since 2023-8-25
  */
-public abstract class BasePop <T extends ViewGroup> {
+public abstract class BasePop {
     protected Activity activity;  //依附的活动
 
     protected Background mBase;  //父容器
 
     protected int layout;  //弹窗内容布局文件
 
-    protected T mContainer; //内容父容器
-
     protected View mContent;  //内容
-
-    protected BackgroundView mBaseView; //阴影背景
 
     protected ViewGroup mParent; //Activity的布局
 
@@ -87,8 +83,14 @@ public abstract class BasePop <T extends ViewGroup> {
             } catch (Exception ignored) {
             }
         }
+        if (myPopListener != null) {
+            myPopListener.beforeShow();
+        }
         beforeShow();
         animateShow();
+        if (myPopListener != null) {
+            myPopListener.onShow();
+        }
     }
 
     /**
@@ -99,26 +101,32 @@ public abstract class BasePop <T extends ViewGroup> {
             return;
         }
         showState = SHOW_STATE_DISMISSING;
+        if (myPopListener != null) {
+            myPopListener.beforeDismiss();
+        }
         beforeDismiss();
         animateDismiss();
+        if (myPopListener != null) {
+            myPopListener.onDismiss();
+        }
     }
 
-    public BasePop<T> setClickThrough(boolean clickThrough) {
+    public BasePop setClickThrough(boolean clickThrough) {
         isClickThrough = clickThrough;
         return this;
     }
 
-    public BasePop<T> setDismissOnBack(boolean dismissOnBack) {
+    public BasePop setDismissOnBack(boolean dismissOnBack) {
         this.dismissOnBack = dismissOnBack;
         return this;
     }
 
-    public BasePop<T> setPopListener(BasePopListener myPopListener) {
+    public BasePop setPopListener(BasePopListener myPopListener) {
         this.myPopListener = myPopListener;
         return this;
     }
 
-    public BasePop<T> setDismissTouchOutside(boolean dismissTouchOutside) {
+    public BasePop setDismissTouchOutside(boolean dismissTouchOutside) {
         this.dismissTouchOutside = dismissTouchOutside;
         return this;
     }
@@ -127,20 +135,7 @@ public abstract class BasePop <T extends ViewGroup> {
         return mBase;
     }
 
-    /**
-     * 添加加载弹窗
-     */
-    public void addLoading(View loadingView) {
-        try {
-            if (mContainer != null && loadingView != null) {
-                mContainer.addView(loadingView);
-            }
-        } catch (Throwable ignored) {
-        }
-    }
-
     private void create() {
-        mBaseView = new BackgroundView(activity);
         maxHeight = getMaxHeight();
         mBase = new Background(activity, () -> {
             if (myPopListener != null) {
@@ -151,38 +146,45 @@ public abstract class BasePop <T extends ViewGroup> {
             }
         });
         mBase.setClickThrough(isClickThrough);
-
-        mBaseView = new BackgroundView(activity);
-        mBaseView.setOnback(() -> {
-            if (dismissTouchOutside) {
-                dismiss();
-            }
-        });
-        FrameLayout.LayoutParams flp2 = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mBaseView.setLayoutParams(flp2);
-
-        mBase.addView(mBaseView);  //背景
-        //(FrameLayout) activity.findViewById(android.R.id.content);
         mParent = (FrameLayout) activity.getWindow().getDecorView();
         mParent.addView(mBase);
         isCreate = true;
+        onCreate();
     }
 
+    /**
+     * 创建
+     */
     protected abstract void onCreate();
 
     /**
-     * 需要子类实现，获取需要显示内容的布局文件
+     * 获取需要显示内容的布局文件
      */
     protected abstract int getImplLayoutId();
 
+    /**
+     * 显示之前回调
+     */
     protected abstract void beforeShow();
 
+    /**
+     * 显示之后回调
+     */
     protected abstract void animateShow();
 
+    /**
+     * 消失之前回调
+     */
     protected abstract void beforeDismiss();
 
+    /**
+     * 消失回调
+     */
     protected abstract void animateDismiss();
 
+    /**
+     * 最大高度
+     */
     protected int getMaxHeight() {
         return 0;
     }

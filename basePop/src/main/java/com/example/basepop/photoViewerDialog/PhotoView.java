@@ -13,15 +13,12 @@ import android.widget.ImageView;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
-;
-
 /**
- * A modified version for https://github.com/chrisbanes/PhotoView.
+ * 大图预览
  */
 @SuppressWarnings("unused")
 public class PhotoView extends AppCompatImageView {
-
-    public PhotoViewAttacher attacher;
+    public PhotoViewAttacker attacker;
     private ScaleType pendingScaleType;
 
     public PhotoView(Context context) {
@@ -38,7 +35,7 @@ public class PhotoView extends AppCompatImageView {
     }
 
     private void init() {
-        attacher = new PhotoViewAttacher(this);
+        attacker = new PhotoViewAttacker(this);
         //We always pose as a Matrix scale type, though we can change to another scale type
         //via the attacher
         super.setScaleType(ScaleType.MATRIX);
@@ -50,54 +47,42 @@ public class PhotoView extends AppCompatImageView {
     }
 
     /**
-     * Get the current {@link PhotoViewAttacher} for this view. Be wary of holding on to references
+     * Get the current {@link PhotoViewAttacker} for this view. Be wary of holding on to references
      * to this attacher, as it has a reference to this view, which, if a reference is held in the
      * wrong place, can cause memory leaks.
      *
      * @return the attacher.
      */
-    public PhotoViewAttacher getAttacher() {
-        return attacher;
+    public PhotoViewAttacker getAttacker() {
+        return attacker;
     }
 
     @Override
     public ScaleType getScaleType() {
-        return attacher.getScaleType();
+        return attacker.getScaleType();
     }
 
     @Override
     public Matrix getImageMatrix() {
-        return attacher.getImageMatrix();
+        return attacker.getImageMatrix();
     }
 
     @Override
     public void setOnLongClickListener(OnLongClickListener l) {
-        attacher.setOnLongClickListener(l);
+        attacker.setOnLongClickListener(l);
     }
 
     @Override
     public void setOnClickListener(OnClickListener l) {
-        attacher.setOnClickListener(l);
+        attacker.setOnClickListener(l);
     }
-
-  /*  private int startX;
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                break;
-                case MotionEvent.ACTION_MOVE:
-                    break;
-        }
-        return super.onTouchEvent(event);
-    }*/
 
     @Override
     public void setScaleType(ScaleType scaleType) {
-        if (attacher == null) {
+        if (attacker == null) {
             pendingScaleType = scaleType;
         } else {
-            attacher.setScaleType(scaleType);
+            attacker.setScaleType(scaleType);
         }
     }
 
@@ -105,24 +90,24 @@ public class PhotoView extends AppCompatImageView {
     public void setImageDrawable(Drawable drawable) {
         super.setImageDrawable(drawable);
         // setImageBitmap calls through to this method
-        if (attacher != null) {
-            attacher.update();
+        if (attacker != null) {
+            attacker.update();
         }
     }
 
     @Override
     public void setImageResource(int resId) {
         super.setImageResource(resId);
-        if (attacher != null) {
-            attacher.update();
+        if (attacker != null) {
+            attacker.update();
         }
     }
 
     @Override
     public void setImageURI(Uri uri) {
         super.setImageURI(uri);
-        if (attacher != null) {
-            attacher.update();
+        if (attacker != null) {
+            attacker.update();
         }
     }
 
@@ -130,130 +115,130 @@ public class PhotoView extends AppCompatImageView {
     protected boolean setFrame(int l, int t, int r, int b) {
         boolean changed = super.setFrame(l, t, r, b);
         if (changed) {
-            attacher.update();
+            attacker.update();
         }
         return changed;
     }
 
     public void setRotationTo(float rotationDegree) {
-        attacher.setRotationTo(rotationDegree);
+        attacker.setRotationTo(rotationDegree);
     }
 
     public void setRotationBy(float rotationDegree) {
-        attacher.setRotationBy(rotationDegree);
+        attacker.setRotationBy(rotationDegree);
     }
 
     public boolean isZoomable() {
-        return attacher.isZoomable();
+        return attacker.isZoomable();
     }
 
     public void setZoomable(boolean zoomable) {
-        attacher.setZoomable(zoomable);
+        attacker.setZoomable(zoomable);
     }
 
     public RectF getDisplayRect() {
-        return attacher.getDisplayRect();
+        return attacker.getDisplayRect();
     }
 
     public void getDisplayMatrix(Matrix matrix) {
-        attacher.getDisplayMatrix(matrix);
+        attacker.getDisplayMatrix(matrix);
     }
 
     @SuppressWarnings("UnusedReturnValue")
     public boolean setDisplayMatrix(Matrix finalRectangle) {
-        return attacher.setDisplayMatrix(finalRectangle);
+        return attacker.setDisplayMatrix(finalRectangle);
     }
 
     public void getSuppMatrix(Matrix matrix) {
-        attacher.getSuppMatrix(matrix);
+        attacker.getSuppMatrix(matrix);
     }
 
     public boolean setSuppMatrix(Matrix matrix) {
-        return attacher.setDisplayMatrix(matrix);
+        return attacker.setDisplayMatrix(matrix);
     }
 
     public float getMinimumScale() {
-        return attacher.getMinimumScale();
+        return attacker.getMinimumScale();
     }
 
     public float getMediumScale() {
-        return attacher.getMediumScale();
+        return attacker.getMediumScale();
     }
 
     public float getMaximumScale() {
-        return attacher.getMaximumScale();
+        return attacker.getMaximumScale();
     }
 
     public float getScale() {
-        return attacher.getScale();
+        return attacker.getScale();
     }
 
     public void setAllowParentInterceptOnEdge(boolean allow) {
-        attacher.setAllowParentInterceptOnEdge(allow);
+        attacker.setAllowParentInterceptOnEdge(allow);
     }
 
     public void setMinimumScale(float minimumScale) {
-        attacher.setMinimumScale(minimumScale);
+        attacker.setMinimumScale(minimumScale);
     }
 
     public void setMediumScale(float mediumScale) {
-        attacher.setMediumScale(mediumScale);
+        attacker.setMediumScale(mediumScale);
     }
 
     public void setMaximumScale(float maximumScale) {
-        attacher.setMaximumScale(maximumScale);
+        attacker.setMaximumScale(maximumScale);
     }
 
     public void setScaleLevels(float minimumScale, float mediumScale, float maximumScale) {
-        attacher.setScaleLevels(minimumScale, mediumScale, maximumScale);
+        attacker.setScaleLevels(minimumScale, mediumScale, maximumScale);
     }
 
     public void setOnMatrixChangeListener(OnMatrixChangedListener listener) {
-        attacher.setOnMatrixChangeListener(listener);
+        attacker.setOnMatrixChangeListener(listener);
     }
 
     public void setOnPhotoTapListener(OnPhotoTapListener listener) {
-        attacher.setOnPhotoTapListener(listener);
+        attacker.setOnPhotoTapListener(listener);
     }
 
     public void setOnOutsidePhotoTapListener(OnOutsidePhotoTapListener listener) {
-        attacher.setOnOutsidePhotoTapListener(listener);
+        attacker.setOnOutsidePhotoTapListener(listener);
     }
 
     public void setOnViewTapListener(OnViewTapListener listener) {
-        attacher.setOnViewTapListener(listener);
+        attacker.setOnViewTapListener(listener);
     }
 
     public void setOnViewDragListener(OnViewDragListener listener) {
-        attacher.setOnViewDragListener(listener);
+        attacker.setOnViewDragListener(listener);
     }
 
     public void setScale(float scale) {
-        attacher.setScale(scale);
+        attacker.setScale(scale);
     }
 
     public void setScale(float scale, boolean animate) {
-        attacher.setScale(scale, animate);
+        attacker.setScale(scale, animate);
     }
 
     public void setScale(float scale, float focalX, float focalY, boolean animate) {
-        attacher.setScale(scale, focalX, focalY, animate);
+        attacker.setScale(scale, focalX, focalY, animate);
     }
 
     public void setZoomTransitionDuration(int milliseconds) {
-        attacher.setZoomTransitionDuration(milliseconds);
+        attacker.setZoomTransitionDuration(milliseconds);
     }
 
     public void setOnDoubleTapListener(GestureDetector.OnDoubleTapListener onDoubleTapListener) {
-        attacher.setOnDoubleTapListener(onDoubleTapListener);
+        attacker.setOnDoubleTapListener(onDoubleTapListener);
     }
 
     public void setOnScaleChangeListener(OnScaleChangedListener onScaleChangedListener) {
-        attacher.setOnScaleChangeListener(onScaleChangedListener);
+        attacker.setOnScaleChangeListener(onScaleChangedListener);
     }
 
     public void setOnSingleFlingListener(OnSingleFlingListener onSingleFlingListener) {
-        attacher.setOnSingleFlingListener(onSingleFlingListener);
+        attacker.setOnSingleFlingListener(onSingleFlingListener);
     }
 
     public interface OnPhotoTapListener {

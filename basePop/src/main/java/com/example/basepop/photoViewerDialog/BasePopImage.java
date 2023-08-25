@@ -13,6 +13,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,18 +41,26 @@ import java.util.Locale;
 /**
  * 大图预览弹窗
  */
-public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
+public abstract class BasePopImage extends BasePop {
+    private static final String TAG = "BasePopImage";
+
     protected int layout;
+
     protected ImageView srcView;
+
     protected PhotoView mPhoto;
+
     private String url;
+
     private Rect rect;
-    protected boolean isShow = false, isShowBg = true, isAboveNavi = false;
+
+    protected boolean isShowBg = true, isAboveNavi = false;
     //contentAnimate
     protected static final int animationDuration = 480; //弹窗打开/关闭动画时长
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final boolean isZeroDuration = false;
+    private PhotoViewContainer mContainer;
 
     private LoadImage loadImage;
 
@@ -72,7 +81,6 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
         if (!isShowBg) {
             shadowBgColor = R.color.transparent;
         }
-        mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mContent = LayoutInflater.from(activity).inflate(layout, mBase, false);
         mContainer = new PhotoViewContainer(activity);
         setPhoto(mContent.findViewById(R.id.dialog_image_photo));
@@ -81,10 +89,10 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
                 @SuppressLint("InternalInsetResource") int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
                 int height = getResources().getDimensionPixelSize(resourceId);
                 FrameLayout.LayoutParams flpBa = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
+                        ViewGroup.LayoutParams.MATCH_PARENT);
                 flpBa.bottomMargin = height;
                 mBase.setLayoutParams(flpBa);
-            } catch (Exception ignored) {
+            } catch (Throwable ignored) {
             }
         }
         if (mPhoto != null) {
@@ -108,7 +116,7 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
                 public void onDragChange(int dy, float scale, float fraction) {
 
 
-                    mBaseView.setBackgroundColor((Integer) argbEvaluator.evaluate(fraction * .8f, shadowBgColor, Color.TRANSPARENT));
+                    mBase.setBackgroundColor((Integer) argbEvaluator.evaluate(fraction * .8f, shadowBgColor, Color.TRANSPARENT));
                 }
             });
         }
@@ -135,17 +143,13 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
     }
 
     public void animateShow() {
-
-        if (myPopListener != null) {
-            myPopListener.onShow();
-        }
         mPhoto.post(() -> {
             TransitionManager.beginDelayedTransition((ViewGroup) mPhoto.getParent(), new TransitionSet()
-                .setDuration(animationDuration)
-                .addTransition(new ChangeBounds())
-                .addTransition(new ChangeTransform())
-                .addTransition(new ChangeImageTransform())
-                .setInterpolator(new FastOutSlowInInterpolator()));
+                    .setDuration(animationDuration)
+                    .addTransition(new ChangeBounds())
+                    .addTransition(new ChangeTransform())
+                    .addTransition(new ChangeImageTransform())
+                    .setInterpolator(new FastOutSlowInInterpolator()));
             mPhoto.setScaleY(1);
             mPhoto.setScaleX(1);
             mPhoto.setTranslationY(0);
@@ -155,7 +159,7 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor, shadowBgColor);
         animator.addUpdateListener(animation -> {
             if (isShowBg) {
-                mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
+                mBase.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
@@ -167,21 +171,16 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
         animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
-
     }
 
     public void animateDismiss() {
-
-        if (myPopListener != null) {
-            myPopListener.onDismiss();
-        }
         mPhoto.post(() -> {
             TransitionManager.beginDelayedTransition((ViewGroup) mContent.getParent(), new TransitionSet()
-                .setDuration(animationDuration)
-                .addTransition(new ChangeBounds())
-                .addTransition(new ChangeTransform())
-                .addTransition(new ChangeImageTransform())
-                .setInterpolator(new FastOutSlowInInterpolator()));
+                    .setDuration(animationDuration)
+                    .addTransition(new ChangeBounds())
+                    .addTransition(new ChangeTransform())
+                    .addTransition(new ChangeImageTransform())
+                    .setInterpolator(new FastOutSlowInInterpolator()));
             FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             flp.gravity = Gravity.CENTER;
             mContainer.setLayoutParams(flp);
@@ -190,11 +189,11 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
             initAnimator();
         });
 
-        final int start = ((ColorDrawable) mBaseView.getBackground()).getColor();
+        final int start = ((ColorDrawable) mBase.getBackground()).getColor();
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, start, startColor);
         animator.addUpdateListener(animation -> {
             if (isShowBg) {
-                mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
+                mBase.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
@@ -256,12 +255,15 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
     }
 
     private void initParam() {
-        mPhoto.attacher.reset();
+        mPhoto.attacker.reset();
         float screenWidth = (float) PxTool.screenWidth;
+        float screenHeight = (float) PxTool.screenHeight;
         mPhoto.setScaleX((float) (rect.width()) / screenWidth);
         mPhoto.setScaleY((float) (rect.width()) / screenWidth);
-        float tranX = -(float) (screenWidth - rect.width()) / 2f - rect.left;
-        float tranY = -(float) ((mParent.getMeasuredHeight() - rect.height()) / 2f - rect.top);
+        float tranX = rect.left - screenWidth / 2f + (float) rect.width() / 2f;
+        float tranY = rect.top - screenHeight / 2f;
+        Log.d(TAG, "traX:" + tranX + "  traY:" + tranY + " screenWidth:" + screenWidth +
+                "  rectWidth:" + rect.width() + "  recLeft:" + rect.left);
         mPhoto.setTranslationX(tranX);
         mPhoto.setTranslationY(tranY);
     }
@@ -271,21 +273,13 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
         return mBase.getResources();
     }
 
-    public boolean isShow() {
-        return isShow;
-    }
-
     public void beforeShow() {   //弹窗显示之前执行
-        if (myPopListener != null) {
-            myPopListener.beforeShow();
-        }
+     
         initAnimator();
     }
 
     public void beforeDismiss() {
-        if (myPopListener != null) {
-            myPopListener.beforeDismiss();
-        }
+      
     }
 
 

@@ -18,7 +18,7 @@ public class ViewUtils {
 
     public static int getMaxHeight(View view) {   //获取view未显示前的高度
         view.measure(View.MeasureSpec.makeMeasureSpec(PxTool.dpToPx(2000), View.MeasureSpec.AT_MOST),
-            View.MeasureSpec.makeMeasureSpec(PxTool.dpToPx(2000), View.MeasureSpec.AT_MOST));
+                View.MeasureSpec.makeMeasureSpec(PxTool.dpToPx(2000), View.MeasureSpec.AT_MOST));
         return view.getMeasuredHeight();
     }
 

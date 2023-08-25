@@ -6,7 +6,6 @@ import com.example.basepop.R;
 
 
 public class ImageDialog extends BasePopImage {
-
     public ImageDialog(Activity activity) {
         super(activity);
     }

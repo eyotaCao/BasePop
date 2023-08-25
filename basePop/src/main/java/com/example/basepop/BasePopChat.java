@@ -29,7 +29,7 @@ import com.example.basepop.utils.ViewUtils;
 
 
 //底部弹框 直接弹出
-public abstract class BasePopChat extends BasePop<ContainerBottom> {
+public abstract class BasePopChat extends BasePop {
     protected boolean isShow = false;
     protected boolean isAutoEdit = false;
     private InputMethodManager imm;
@@ -42,6 +42,8 @@ public abstract class BasePopChat extends BasePop<ContainerBottom> {
     private int oldHeight, maxHeight = 0;  //初始高度
     //shadowAnimate
     private boolean isConScrollAble = true;
+
+    private ContainerBottom mContainer;
 
 
     public BasePopChat(Activity activity) {
@@ -66,17 +68,16 @@ public abstract class BasePopChat extends BasePop<ContainerBottom> {
         boolean isShowNav = PxTool.isShowNavBar(activity);
         int mNavigationHeight;
         if (isShowNav) {
-            int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+            @SuppressLint("InternalInsetResource") int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
             mNavigationHeight = getResources().getDimensionPixelSize(resourceId);
         } else {
             mNavigationHeight = 0;
         }
 
         try {
-
             if (isShowNavi) {
                 FrameLayout.LayoutParams flpBa = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
+                        ViewGroup.LayoutParams.MATCH_PARENT);
                 flpBa.bottomMargin = mNavigationHeight;
                 mBase.setLayoutParams(flpBa);
             } else {
@@ -100,16 +101,14 @@ public abstract class BasePopChat extends BasePop<ContainerBottom> {
 
     public void animateShow() {
 
-        if (myPopListener != null) {
-            myPopListener.onShow();
-        }
+  
         initAutoEdit();
         isPostShowSoft = true;
         initEdit();
         TransitionManager.beginDelayedTransition((ViewGroup) mContent.getParent(), new TransitionSet()
-            .setDuration(100)
-            .addTransition(new ChangeTransform())
-            .setInterpolator(new FastOutSlowInInterpolator()));
+                .setDuration(100)
+                .addTransition(new ChangeTransform())
+                .setInterpolator(new FastOutSlowInInterpolator()));
         mContent.setTranslationY(0);
         mContent.postDelayed(() -> {
             showState = BasePopConstants.SHOW_STATE_SHOW;
@@ -119,10 +118,6 @@ public abstract class BasePopChat extends BasePop<ContainerBottom> {
     }
 
     public void animateDismiss() {
-
-        if (myPopListener != null) {
-            myPopListener.onDismiss();
-        }
         mContent.postDelayed(() -> {
             showState = BasePopConstants.SHOW_STATE_DISMISS;
             mParent.removeView(mBase);
@@ -134,16 +129,15 @@ public abstract class BasePopChat extends BasePop<ContainerBottom> {
         } else {
             dismissContent();
         }
-
     }
 
     private void dismissContent() {
         ViewPropertyAnimator animator2;
         animator2 = mContent.animate().translationY(oldHeight);
         if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
-            .setDuration(animationDuration)
-            .withLayer()
-            .start();
+                .setDuration(animationDuration)
+                .withLayer()
+                .start();
     }
 
     public <T extends View> T findViewById(int id) {
@@ -175,9 +169,7 @@ public abstract class BasePopChat extends BasePop<ContainerBottom> {
     }
 
     public void beforeShow() {   //弹窗显示之前执行
-        if (myPopListener != null) {
-            myPopListener.beforeShow();
-        }
+     
         initAnimator();
     }
 
@@ -223,9 +215,7 @@ public abstract class BasePopChat extends BasePop<ContainerBottom> {
     }
 
     public void beforeDismiss() {
-        if (myPopListener != null) {
-            myPopListener.beforeDismiss();
-        }
+      
 
     }
 
@@ -245,18 +235,18 @@ public abstract class BasePopChat extends BasePop<ContainerBottom> {
                 if (isChange) return;
                 isChange = true;
                 TransitionManager.beginDelayedTransition((ViewGroup) mContainer.getParent(), new TransitionSet()
-                    .setDuration(animationDuration)
-                    .addTransition(new ChangeTransform())
-                    .setInterpolator(new FastOutSlowInInterpolator()));
+                        .setDuration(animationDuration)
+                        .addTransition(new ChangeTransform())
+                        .setInterpolator(new FastOutSlowInInterpolator()));
 
                 mContainer.setTranslationY(-change);
             } else {
                 if (!isChange) return;
                 if (showState == BasePopConstants.SHOW_STATE_DISMISS) {
                     TransitionManager.beginDelayedTransition((ViewGroup) mContainer.getParent(), new TransitionSet()
-                        .setDuration(200)
-                        .addTransition(new ChangeTransform())
-                        .setInterpolator(new FastOutSlowInInterpolator()));
+                            .setDuration(200)
+                            .addTransition(new ChangeTransform())
+                            .setInterpolator(new FastOutSlowInInterpolator()));
                 }
 
                 isChange = false;

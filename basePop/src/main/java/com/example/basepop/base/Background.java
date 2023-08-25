@@ -19,34 +19,24 @@ public class Background extends FrameLayout {
         super(context);
         this.mOnBack = onBack;
         init();
-        init2();
     }
 
     public Background(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
-        init2();
     }
 
     public Background(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
-        init2();
-    }
-
-
-    public void init2() {
-
     }
 
     public void init() {   //拦截返回事件
-
-
         setFocusableInTouchMode(true);
         requestFocus();
         setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
-                mOnBack.onBack();
+                mOnBack.onDoBack();
                 return true;
             }
             return false;
@@ -63,13 +53,11 @@ public class Background extends FrameLayout {
         return super.onInterceptTouchEvent(ev);
     }
 
-    //private int disDownCount=0,disUpCount=0;
     private float x, y, x1, y1;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 x1 = event.getX();
@@ -84,7 +72,7 @@ public class Background extends FrameLayout {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 if (x1 == event.getX() && y1 == event.getY()) {
-                    mOnBack.onBack();
+                    mOnBack.onDoBack();
                 }
 
                 if (isClickThrough) {
@@ -105,7 +93,7 @@ public class Background extends FrameLayout {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 if (Math.abs(x - event.getX()) < 8 && Math.abs(y - event.getY()) < 8) {
-                    mOnBack.onBack();
+                    mOnBack.onDoBack();
                     post(() -> ((Activity) getContext()).dispatchTouchEvent(event));
                 }
 
@@ -120,8 +108,7 @@ public class Background extends FrameLayout {
         isClickThrough = clickThrough;
     }
 
-
-    public static interface onBack {
-        void onBack();
+    public interface onBack {
+        void onDoBack();
     }
 }

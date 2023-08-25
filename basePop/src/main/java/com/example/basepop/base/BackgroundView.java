@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class BackgroundView extends View {  //弹窗背景 不可穿透
-
     private boolean isClickThrough;
+
     private onBack mOnBack;
 
     public BackgroundView(@NonNull Context context) {
@@ -30,18 +30,13 @@ public class BackgroundView extends View {  //弹窗背景 不可穿透
         init();
     }
 
-
     private void init() {
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mOnBack != null) {
-                    mOnBack.onback();
-                }
+        setOnClickListener(view -> {
+            if (mOnBack != null) {
+                mOnBack.onback();
             }
         });
     }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -86,5 +81,4 @@ public class BackgroundView extends View {  //弹窗背景 不可穿透
     public void setOnback(onBack onBack) {
         mOnBack = onBack;
     }
-
 }

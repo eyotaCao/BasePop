@@ -95,12 +95,12 @@ public class PhotoViewContainer extends FrameLayout {
 
     private boolean isTopOrBottomEnd() {
         PhotoView photoView = getCurrentPhotoView();
-        return photoView != null && (photoView.attacher.isTopEnd || photoView.attacher.isBottomEnd);
+        return photoView != null && (photoView.attacker.isTopEnd || photoView.attacker.isBottomEnd);
     }
 
     private boolean isLeftOrRightEnd() {
         PhotoView photoView = getCurrentPhotoView();
-        return photoView != null && (photoView.attacher.isLeftEnd || photoView.attacher.isRightEnd);
+        return photoView != null && (photoView.attacker.isLeftEnd || photoView.attacker.isRightEnd);
     }
 
     private PhotoView getCurrentPhotoView() {

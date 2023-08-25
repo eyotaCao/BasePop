@@ -10,24 +10,31 @@ import android.view.ViewConfiguration;
  * Does a whole lot of gesture detecting.
  */
 class CustomGestureDetector {
-
     private static final int INVALID_POINTER_ID = -1;
 
     private int mActivePointerId = INVALID_POINTER_ID;
+
     private int mActivePointerIndex = 0;
+
     private final ScaleGestureDetector mDetector;
 
     private VelocityTracker mVelocityTracker;
+
     private boolean mIsDragging;
+
     private float mLastTouchX;
+
     private float mLastTouchY;
+
     private final float mTouchSlop;
+
     private final float mMinimumVelocity;
-    private OnGestureListener mListener;
+
+    private final OnGestureListener mListener;
 
     CustomGestureDetector(Context context, OnGestureListener listener) {
         final ViewConfiguration configuration = ViewConfiguration
-            .get(context);
+                .get(context);
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
         mTouchSlop = configuration.getScaledTouchSlop();
 
@@ -41,7 +48,7 @@ class CustomGestureDetector {
                     return false;
                 if (scaleFactor >= 0) {
                     mListener.onScale(scaleFactor,
-                        detector.getFocusX(), detector.getFocusY());
+                            detector.getFocusX(), detector.getFocusY());
                 }
                 return true;
             }
@@ -150,13 +157,13 @@ class CustomGestureDetector {
                         mVelocityTracker.computeCurrentVelocity(1000);
 
                         final float vX = mVelocityTracker.getXVelocity(), vY = mVelocityTracker
-                            .getYVelocity();
+                                .getYVelocity();
 
                         // If the velocity is greater than minVelocity, call
                         // listener
                         if (Math.max(Math.abs(vX), Math.abs(vY)) >= mMinimumVelocity) {
                             mListener.onFling(mLastTouchX, mLastTouchY, -vX,
-                                -vY);
+                                    -vY);
                         }
                     }
                 }
@@ -182,8 +189,8 @@ class CustomGestureDetector {
         }
 
         mActivePointerIndex = ev
-            .findPointerIndex(mActivePointerId != INVALID_POINTER_ID ? mActivePointerId
-                : 0);
+                .findPointerIndex(mActivePointerId != INVALID_POINTER_ID ? mActivePointerId
+                        : 0);
         return true;
     }
 }

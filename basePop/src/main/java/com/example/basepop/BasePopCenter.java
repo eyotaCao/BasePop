@@ -21,7 +21,7 @@ import com.example.basepop.base.container.Container;
 import com.example.basepop.utils.PxTool;
 
 //中心弹框  中心弹出动画
-public abstract class BasePopCenter extends BasePop<Container> {
+public abstract class BasePopCenter extends BasePop {
     protected boolean isShow = false, isShowBg = true;
     //contentAnimate
     float startScale = .75f;
@@ -29,6 +29,7 @@ public abstract class BasePopCenter extends BasePop<Container> {
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final boolean isZeroDuration = false;
     private boolean isConScrollAble = false;
+    private Container mContainer;
 
     public BasePopCenter(Activity activity) {
         super(activity);
@@ -46,7 +47,7 @@ public abstract class BasePopCenter extends BasePop<Container> {
         //初始高度
         int maxWidth = getMaxWidth();
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-            , Gravity.CENTER));
+                , Gravity.CENTER));
         mContainer = new Container(activity, isConScrollAble);
         mContent = LayoutInflater.from(activity).inflate(layout, mContainer, false);
         try {
@@ -72,18 +73,16 @@ public abstract class BasePopCenter extends BasePop<Container> {
     }
 
     public void animateShow() {
-        if (myPopListener != null) {
-            myPopListener.onShow();
-        }
+  
         mContainer.post(() -> mContainer.animate().scaleX(1f).scaleY(1f).alpha(1f)
-            .setDuration(animationDuration)
-            .setInterpolator(new OvershootInterpolator(1f))
+                .setDuration(animationDuration)
+                .setInterpolator(new OvershootInterpolator(1f))
 //                .withLayer() 在部分6.0系统会引起crash
-            .start());
+                .start());
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor, shadowBgColor);
         animator.addUpdateListener(animation -> {
             if (isShowBg) {
-                mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
+                mBase.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
@@ -100,17 +99,15 @@ public abstract class BasePopCenter extends BasePop<Container> {
 
     public void animateDismiss() {
 
-        if (myPopListener != null) {
-            myPopListener.onDismiss();
-        }
+        
         mContainer.animate().scaleX(startScale).scaleY(startScale).alpha(0f).setDuration(animationDuration)
-            .setInterpolator(new FastOutSlowInInterpolator())
+                .setInterpolator(new FastOutSlowInInterpolator())
 //                .withLayer() 在部分6.0系统会引起crash
-            .start();
+                .start();
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, startColor);
         animator.addUpdateListener(animation -> {
             if (isShowBg) {
-                mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
+                mBase.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
@@ -168,16 +165,12 @@ public abstract class BasePopCenter extends BasePop<Container> {
     }
 
     public void beforeShow() {   //弹窗显示之前执行
-        if (myPopListener != null) {
-            myPopListener.beforeShow();
-        }
+     
         initAnimator();
     }
 
     public void beforeDismiss() {
-        if (myPopListener != null) {
-            myPopListener.beforeDismiss();
-        }
+      
     }
 
     //获取弹窗最大高度

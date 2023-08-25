@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //中心弹框  中心弹出动画 有编辑框自动弹起
-public abstract class BasePopCenterEdit extends BasePop<Container> {
+public abstract class BasePopCenterEdit extends BasePop {
     protected boolean isShow = false, isShowBg = true, isAutoEdit = false;
     //contentAnimate
     float startScale = .75f;
@@ -39,6 +39,8 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final boolean isZeroDuration = false;
     private boolean isConScrollAble = false;
+
+    private Container mContainer;
 
     public BasePopCenterEdit(Activity activity) {
         super(activity);
@@ -85,18 +87,16 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
 
     public void animateShow() {
 
-        if (myPopListener != null) {
-            myPopListener.onShow();
-        }
+  
         mContainer.post(() -> mContainer.animate().scaleX(1f).scaleY(1f).alpha(1f)
-            .setDuration(animationDuration)
-            .setInterpolator(new OvershootInterpolator(1f))
+                .setDuration(animationDuration)
+                .setInterpolator(new OvershootInterpolator(1f))
 //                .withLayer() 在部分6.0系统会引起crash
-            .start());
+                .start());
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor, shadowBgColor);
         animator.addUpdateListener(animation -> {
             if (isShowBg) {
-                mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
+                mBase.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
@@ -126,18 +126,18 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
                         animator2 = mContainer.animate().translationY(-(Math.abs(change) - screenHei + location[1] + mContainer.getMeasuredHeight()));
                         if (animator2 != null)
                             animator2.setInterpolator(new FastOutSlowInInterpolator())
-                                .setDuration(200)
-                                //  .withLayer()
-                                .start();
+                                    .setDuration(200)
+                                    //  .withLayer()
+                                    .start();
                     }
                 }
             } else {
                 ViewPropertyAnimator animator2;
                 animator2 = mContainer.animate().translationY(0);
                 if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
-                    .setDuration(200)
-                    //  .withLayer()
-                    .start();
+                        .setDuration(200)
+                        //  .withLayer()
+                        .start();
                 mBase.init();
             }
         });
@@ -156,17 +156,15 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
 
     public void animateDismiss() {
 
-        if (myPopListener != null) {
-            myPopListener.onDismiss();
-        }
+        
         mContainer.animate().scaleX(startScale).scaleY(startScale).alpha(0f).setDuration(animationDuration)
-            .setInterpolator(new FastOutSlowInInterpolator())
+                .setInterpolator(new FastOutSlowInInterpolator())
 //                .withLayer() 在部分6.0系统会引起crash
-            .start();
+                .start();
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, startColor);
         animator.addUpdateListener(animation -> {
             if (isShowBg) {
-                mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
+                mBase.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
         animator.addListener(new AnimatorListenerAdapter() {
@@ -232,16 +230,12 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
     }
 
     public void beforeShow() {   //弹窗显示之前执行
-        if (myPopListener != null) {
-            myPopListener.beforeShow();
-        }
+     
         initAnimator();
     }
 
     public void beforeDismiss() {
-        if (myPopListener != null) {
-            myPopListener.beforeDismiss();
-        }
+      
     }
 
     protected int getMaxWidth() {

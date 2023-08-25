@@ -132,7 +132,7 @@ public class PxTool {
     public static int getRealHeight(Context context) {
         if (null == wm) {
             wm = (WindowManager)
-                context.getSystemService(Context.WINDOW_SERVICE);
+                    context.getSystemService(Context.WINDOW_SERVICE);
         }
         Point point = new Point();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -156,9 +156,9 @@ public class PxTool {
 
     public static boolean checkDeviceHasNavigationBar(Context context) {
         boolean hasMenuKey = ViewConfiguration.get(context)
-            .hasPermanentMenuKey();
+                .hasPermanentMenuKey();
         boolean hasBackKey = KeyCharacterMap
-            .deviceHasKey(KeyEvent.KEYCODE_BACK);
+                .deviceHasKey(KeyEvent.KEYCODE_BACK);
         return !hasMenuKey & !hasBackKey;
     }
 
@@ -180,7 +180,7 @@ public class PxTool {
 
     public static void setMeasureMax(View view) {   //测量出最大尺寸
         view.measure(View.MeasureSpec.makeMeasureSpec(PxTool.dpToPx(1000), View.MeasureSpec.AT_MOST),
-            View.MeasureSpec.makeMeasureSpec(PxTool.dpToPx(1000), View.MeasureSpec.AT_MOST));
+                View.MeasureSpec.makeMeasureSpec(PxTool.dpToPx(1000), View.MeasureSpec.AT_MOST));
     }
 
 
