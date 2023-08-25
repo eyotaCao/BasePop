@@ -1,7 +1,8 @@
 # 一、简介与使用：
 安卓弹窗基类，可以适配全面屏手势，基于自定义view，功能与xpopup类似。
 
-使用：
+使用：gradle文件添加依赖即可
+
 最新版：
 [![](https://jitpack.io/v/EyoutaCao/BasePop.svg)](https://jitpack.io/#EyoutaCao/BasePop)
 
