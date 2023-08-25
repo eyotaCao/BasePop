@@ -2,14 +2,7 @@
 安卓弹窗基类，可以适配全面屏手势，基于自定义view，功能与xpopup类似。
 
 使用：
-```
-//添加仓库
- maven { url 'https://jitpack.io' }
- 
-//稳定版
-implementation 'com.github.EyoutaCao:BasePop:1.0.3'
-```
-最新版
+最新版：
 [![](https://jitpack.io/v/EyoutaCao/BasePop.svg)](https://jitpack.io/#EyoutaCao/BasePop)
 
 
