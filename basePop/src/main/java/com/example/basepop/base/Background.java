@@ -35,10 +35,11 @@ public class Background extends FrameLayout {
     }
 
 
-    public void init2(){
+    public void init2() {
 
     }
-    public void init(){   //拦截返回事件
+
+    public void init() {   //拦截返回事件
 
 
         setFocusableInTouchMode(true);
@@ -63,32 +64,32 @@ public class Background extends FrameLayout {
     }
 
     //private int disDownCount=0,disUpCount=0;
-    private float x, y,x1,y1;
+    private float x, y, x1, y1;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        switch (event.getAction()){
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 x1 = event.getX();
                 y1 = event.getY();
 
-                if (isClickThrough){
+                if (isClickThrough) {
                     return super.onTouchEvent(event);
-                }else {
+                } else {
                     return true;
                 }
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if (x1==event.getX()&&y1==event.getY()){
+                if (x1 == event.getX() && y1 == event.getY()) {
                     mOnBack.onBack();
                 }
 
-                if (isClickThrough){
+                if (isClickThrough) {
                     return super.onTouchEvent(event);
-                }else {
+                } else {
                     return true;
                 }
 
@@ -97,15 +98,15 @@ public class Background extends FrameLayout {
             case MotionEvent.ACTION_DOWN:
                 x = event.getX();
                 y = event.getY();
-                post(()-> ((Activity) getContext()).dispatchTouchEvent(event));
+                post(() -> ((Activity) getContext()).dispatchTouchEvent(event));
 
 
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if (Math.abs(x-event.getX())<8&&Math.abs(y-event.getY())<8){
+                if (Math.abs(x - event.getX()) < 8 && Math.abs(y - event.getY()) < 8) {
                     mOnBack.onBack();
-                    post(()-> ((Activity) getContext()).dispatchTouchEvent(event));
+                    post(() -> ((Activity) getContext()).dispatchTouchEvent(event));
                 }
 
 

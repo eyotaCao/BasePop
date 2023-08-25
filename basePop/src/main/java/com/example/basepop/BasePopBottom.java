@@ -34,56 +34,53 @@ import java.util.List;
 
 //底部弹框 有输入框自动弹起
 public abstract class BasePopBottom extends BasePop<ContainerBottom> {
-    protected boolean isShow=false;
+    protected boolean isShow = false;
     //是否自动调整弹窗位置
-    protected boolean isAutoEdit=false;
+    protected boolean isAutoEdit = false;
     private List<EditText> mEdits;
     private ScrollView mScroll;
     private ViewGroup mScrollChild;
     //是否显示导航栏
-    private boolean isShowNavi=false;
-    private int l,t,r,b;
+    private boolean isShowNavi = false;
+    private int l, t, r, b;
     private NestedScrollView mScroll2;
-
-    private float scrollP = 1;
-
     //contentAnimate
-    private int  oldHeight,maxHeight=0;  //初始高度
+    private int oldHeight, maxHeight = 0;  //初始高度
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final boolean isZeroDuration = false;
-    private boolean isConScrollAble=true;
+    private boolean isConScrollAble = true;
 
-    public BasePopBottom(Activity activity){
+    public BasePopBottom(Activity activity) {
         super(activity);
     }
 
 
-    public void setLayout(int layout){
-        this.layout=layout;
+    public void setLayout(int layout) {
+        this.layout = layout;
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    protected void onCreate(){  //加入弹窗
-        super.onCreate();
+    @Override
+    protected void onCreate() {  //加入弹窗
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mContent= LayoutInflater.from(activity).inflate(layout,mBase,false);
-        mContainer=new ContainerBottom(activity,isConScrollAble);
+        mContent = LayoutInflater.from(activity).inflate(layout, mBase, false);
+        mContainer = new ContainerBottom(activity, isConScrollAble);
         mContainer.setOnback(this::dismiss2);
-        FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        flp.gravity= Gravity.BOTTOM;
+        FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        flp.gravity = Gravity.BOTTOM;
         try {
-            int resourceId=getResources().getIdentifier("navigation_bar_height","dimen","android");
+            @SuppressLint("InternalInsetResource") int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
             int height = getResources().getDimensionPixelSize(resourceId);
-            if (isShowNavi){
-                FrameLayout.LayoutParams flpBa=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT);
-                flpBa.bottomMargin=height;
+            if (isShowNavi) {
+                FrameLayout.LayoutParams flpBa = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+                flpBa.bottomMargin = height;
                 mBase.setLayoutParams(flpBa);
-            }else {
-                mContent.setPadding(0,0,0,height);
+            } else {
+                mContent.setPadding(0, 0, 0, height);
             }
-        }catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
         mContainer.setLayoutParams(flp);
         mContainer.setMaxHeight(maxHeight);
         mContainer.addView(mContent);
@@ -92,39 +89,37 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
             if (percent < 0) {
                 return;
             }
-            scrollP = percent;
-            mBaseView.setBackgroundColor((Integer) argbEvaluator.evaluate(percent , startColor, shadowBgColor));
+            mBaseView.setBackgroundColor((Integer) argbEvaluator.evaluate(percent, startColor, shadowBgColor));
         });
 
-        if (isAutoEdit){
+        if (isAutoEdit) {
             try {
-
                 initAutoEdit();
-            }catch (Exception ignored){}
+            } catch (Throwable ignored) {
+            }
 
         }
     }
 
     public void initAnimator() {
-        oldHeight= ViewUtils.getMaxHeight(mContainer);
+        oldHeight = ViewUtils.getMaxHeight(mContainer);
 
         mContent.setTranslationY(oldHeight);
     }
 
     public void animateShow() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onShow();
         }
         mContainer.setTranslationY(0);
-        ViewPropertyAnimator animator2 ;
+        ViewPropertyAnimator animator2;
         animator2 = mContent.animate().translationY(0);
-        if(animator2!=null)animator2.setInterpolator(new FastOutSlowInInterpolator())
-                .setDuration(animationDuration)
-              //  .withLayer()
-                .start();
+        if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
+            .setDuration(animationDuration)
+            .start();
 
-        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor,shadowBgColor );
+        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor, shadowBgColor);
         animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -135,20 +130,20 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
     }
 
     public void animateDismiss() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onDismiss();
         }
-        ViewPropertyAnimator animator2 ;
+        ViewPropertyAnimator animator2;
         animator2 = mContent.animate().translationY(oldHeight);
-        if(animator2!=null)animator2.setInterpolator(new FastOutSlowInInterpolator())
-                .setDuration(animationDuration)
-                .withLayer()
-                .start();
+        if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
+            .setDuration(animationDuration)
+            .withLayer()
+            .start();
 
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, startColor);
         animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
@@ -161,26 +156,27 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
     }
 
     public void animateDismiss2() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onDismiss();
         }
-        mContainer.post(()->{
+        mContainer.post(() -> {
             try {
                 mParent.removeView(mBase);
-            }catch (Exception ignore){}
+            } catch (Exception ignore) {
+            }
         });
     }
 
     /**
      * 关闭弹窗
      */
-    public void dismiss2(){
-        if (showState == SHOW_STATE_DISMISSING || showState == SHOW_STATE_DISMISS){
+    public void dismiss2() {
+        if (showState == SHOW_STATE_DISMISSING || showState == SHOW_STATE_DISMISS) {
             return;
         }
         showState = SHOW_STATE_DISMISSING;
@@ -188,7 +184,7 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
         animateDismiss2();
     }
 
-    public <T extends View> T findViewById(int id){
+    public <T extends View> T findViewById(int id) {
         return mContent.findViewById(id);
     }
 
@@ -199,11 +195,11 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
     }
 
     public BasePopBottom setMaxHeight(int max) {
-        maxHeight=max;
+        maxHeight = max;
         return this;
     }
 
-    protected Resources getResources(){
+    protected Resources getResources() {
         return mBase.getResources();
     }
 
@@ -212,12 +208,12 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
         return this;
     }
 
-    public boolean isShow(){
+    public boolean isShow() {
         return isShow;
     }
 
-    public void beforeShow(){   //弹窗显示之前执行
-        if (myPopListener !=null){
+    public void beforeShow() {   //弹窗显示之前执行
+        if (myPopListener != null) {
             myPopListener.beforeShow();
         }
         initAnimator();
@@ -228,52 +224,53 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
         isAutoEdit = autoEdit;
         return this;
     }
+
     //是否显示导航栏
     public void setShowNavi(boolean showNavi) {
         isShowNavi = showNavi;
     }
 
-    public void beforeDismiss(){
-        if (myPopListener !=null){
+    public void beforeDismiss() {
+        if (myPopListener != null) {
             myPopListener.beforeDismiss();
         }
     }
 
 
-    private void initAutoEdit(){
-        mEdits=new ArrayList<>();
+    private void initAutoEdit() {
+        mEdits = new ArrayList<>();
         final boolean[] isChange = {false};
-        int screenHei= PxTool.getScreenHeight();
+        int screenHei = PxTool.getScreenHeight();
         SoftUtils.addSoftListener(activity, (change, isShow) -> {
-            if (isShow){
-                if (mContent.getMeasuredHeight()<change||mScrollChild==null){
-                    mContainer.setTranslationY(-change-(isShowNavi?0:mContent.getPaddingBottom()));
-                }else {
-                    if (b<change){
-                        mScrollChild.setPadding(l,t,r,change);
-                        isChange[0] =true;
-                        b=change;
+            if (isShow) {
+                if (mContent.getMeasuredHeight() < change || mScrollChild == null) {
+                    mContainer.setTranslationY(-change - (isShowNavi ? 0 : mContent.getPaddingBottom()));
+                } else {
+                    if (b < change) {
+                        mScrollChild.setPadding(l, t, r, change);
+                        isChange[0] = true;
+                        b = change;
                     }
-                    for (EditText editText:mEdits){
-                        if (editText.isFocused()){
+                    for (EditText editText : mEdits) {
+                        if (editText.isFocused()) {
 
-                            int []location=ViewUtils.getLocation(editText);
-                            if (screenHei-location[1]<Math.abs(change)+editText.getMeasuredHeight()){
-                                if (mScroll!=null){
-                                    if (isChange[0]){
-                                        mScroll.postDelayed(()-> mScroll.smoothScrollBy(0,(Math.abs(change)-screenHei+location[1]+editText.getMeasuredHeight())),200);
-                                        isChange[0]=false;
-                                    }else {
-                                        mScroll.smoothScrollBy(0,(Math.abs(change)-screenHei+location[1]+editText.getMeasuredHeight()));
+                            int[] location = ViewUtils.getLocation(editText);
+                            if (screenHei - location[1] < Math.abs(change) + editText.getMeasuredHeight()) {
+                                if (mScroll != null) {
+                                    if (isChange[0]) {
+                                        mScroll.postDelayed(() -> mScroll.smoothScrollBy(0, (Math.abs(change) - screenHei + location[1] + editText.getMeasuredHeight())), 200);
+                                        isChange[0] = false;
+                                    } else {
+                                        mScroll.smoothScrollBy(0, (Math.abs(change) - screenHei + location[1] + editText.getMeasuredHeight()));
                                     }
-                                }else if (mScroll2!= null){
-                                    if (isChange[0]){
-                                        mScroll2.postDelayed(()->{
-                                            mScroll2.smoothScrollBy(0,(Math.abs(change)-screenHei+location[1]+editText.getMeasuredHeight()));
-                                            isChange[0]=false;
-                                        },200);
-                                    }else {
-                                        mScroll2.smoothScrollBy(0,(Math.abs(change)-screenHei+location[1]+editText.getMeasuredHeight()));
+                                } else if (mScroll2 != null) {
+                                    if (isChange[0]) {
+                                        mScroll2.postDelayed(() -> {
+                                            mScroll2.smoothScrollBy(0, (Math.abs(change) - screenHei + location[1] + editText.getMeasuredHeight()));
+                                            isChange[0] = false;
+                                        }, 200);
+                                    } else {
+                                        mScroll2.smoothScrollBy(0, (Math.abs(change) - screenHei + location[1] + editText.getMeasuredHeight()));
 
                                     }
                                 }
@@ -283,34 +280,38 @@ public abstract class BasePopBottom extends BasePop<ContainerBottom> {
                     }
                 }
 
-            }else {
+            } else {
                 mContainer.setTranslationY(0);
                 mBase.init();
             }
         });
         traversalView(mContainer);
     }
-    private void traversalView(ViewGroup viewGroup){
-        for (int i=0;i<viewGroup.getChildCount();i++){
-            if (viewGroup.getChildAt(i) instanceof ViewGroup){
+
+    private void traversalView(ViewGroup viewGroup) {
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            if (viewGroup.getChildAt(i) instanceof ViewGroup) {
                 traversalView((ViewGroup) viewGroup.getChildAt(i));
-                if (viewGroup.getChildAt(i) instanceof ScrollView){
-                    mScroll=(ScrollView) viewGroup.getChildAt(i);
-                    mScrollChild=(ViewGroup) mScroll.getChildAt(0);
-                    l=mScrollChild.getPaddingLeft();t=mScrollChild.getPaddingTop();
-                    r=mScrollChild.getPaddingRight();b=mScrollChild.getPaddingBottom();
-                }else if (viewGroup.getChildAt(i) instanceof NestedScrollView){
-                    mScroll2=(NestedScrollView) viewGroup.getChildAt(i);
-                    mScrollChild=(ViewGroup) mScroll2.getChildAt(0);
-                    l=mScrollChild.getPaddingLeft();t=mScrollChild.getPaddingTop();
-                    r=mScrollChild.getPaddingRight();b=mScrollChild.getPaddingBottom();
+                if (viewGroup.getChildAt(i) instanceof ScrollView) {
+                    mScroll = (ScrollView) viewGroup.getChildAt(i);
+                    mScrollChild = (ViewGroup) mScroll.getChildAt(0);
+                    l = mScrollChild.getPaddingLeft();
+                    t = mScrollChild.getPaddingTop();
+                    r = mScrollChild.getPaddingRight();
+                    b = mScrollChild.getPaddingBottom();
+                } else if (viewGroup.getChildAt(i) instanceof NestedScrollView) {
+                    mScroll2 = (NestedScrollView) viewGroup.getChildAt(i);
+                    mScrollChild = (ViewGroup) mScroll2.getChildAt(0);
+                    l = mScrollChild.getPaddingLeft();
+                    t = mScrollChild.getPaddingTop();
+                    r = mScrollChild.getPaddingRight();
+                    b = mScrollChild.getPaddingBottom();
                 }
-            }else if (viewGroup.getChildAt(i) instanceof EditText){
+            } else if (viewGroup.getChildAt(i) instanceof EditText) {
                 mEdits.add((EditText) viewGroup.getChildAt(i));
             }
         }
     }
-
 
 
     public ViewGroup getBase() {

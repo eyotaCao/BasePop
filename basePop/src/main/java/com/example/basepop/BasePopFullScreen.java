@@ -19,32 +19,32 @@ import com.example.basepop.utils.FastOutSlowInInterpolator;
 
 //全屏弹窗
 public abstract class BasePopFullScreen extends BasePop<Container> {
-    protected boolean isShow=false;
+    protected boolean isShow = false;
     //contentAnimate
     float startScale = 0;
 
-    private boolean isConScrollAble=false;
+    private boolean isConScrollAble = false;
 
-    public BasePopFullScreen(Activity activity){
+    public BasePopFullScreen(Activity activity) {
         super(activity);
         setLayout(getImplLayoutId());
     }
 
 
-    public void setLayout(int layout){
-        this.layout=layout;
+    public void setLayout(int layout) {
+        this.layout = layout;
     }
 
-    protected void onCreate(){  //加入弹窗
-        super.onCreate();
+    @Override
+    protected void onCreate() {  //加入弹窗
         //初始高度
         int maxWidth = getMaxWidth();
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mContent= LayoutInflater.from(activity).inflate(layout,mBase,false);
-        mContainer=new Container(activity,isConScrollAble);
+        mContent = LayoutInflater.from(activity).inflate(layout, mBase, false);
+        mContainer = new Container(activity, isConScrollAble);
 
-        FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        flp.gravity= Gravity.CENTER;
+        FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        flp.gravity = Gravity.CENTER;
         mContainer.setLayoutParams(flp);
         mContainer.setMaxHeight(maxHeight);
         mContainer.setMaxWidth(maxWidth);
@@ -59,49 +59,49 @@ public abstract class BasePopFullScreen extends BasePop<Container> {
 
     public void animateShow() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onShow();
         }
 
         mContainer.animate().alpha(1f)
-                .setDuration(animationDuration).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        showState = BasePopConstants.SHOW_STATE_SHOW;
-                    }
-                })
-                .setInterpolator(new OvershootInterpolator(1f))
+            .setDuration(animationDuration).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    showState = BasePopConstants.SHOW_STATE_SHOW;
+                }
+            })
+            .setInterpolator(new OvershootInterpolator(1f))
 //                .withLayer() 在部分6.0系统会引起crash
-                .start();
-
+            .start();
 
 
     }
 
     public void animateDismiss() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onDismiss();
         }
         mContainer.animate().alpha(0f).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        showState = BasePopConstants.SHOW_STATE_DISMISS;
-                        try {
-                            mParent.removeView(mBase);
-                        }catch (Exception ignored){}
-
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    showState = BasePopConstants.SHOW_STATE_DISMISS;
+                    try {
+                        mParent.removeView(mBase);
+                    } catch (Exception ignored) {
                     }
-        }).setDuration(animationDuration)
-                .setInterpolator(new FastOutSlowInInterpolator())
+
+                }
+            }).setDuration(animationDuration)
+            .setInterpolator(new FastOutSlowInInterpolator())
 //                .withLayer() 在部分6.0系统会引起crash
-                .start();
+            .start();
 
     }
 
-    public <T extends View> T findViewById(int id){
+    public <T extends View> T findViewById(int id) {
         return mContent.findViewById(id);
     }
 
@@ -113,7 +113,7 @@ public abstract class BasePopFullScreen extends BasePop<Container> {
     }
 
     public BasePopFullScreen setMaxHeight(int max) {
-        maxHeight=max;
+        maxHeight = max;
         return this;
     }
 
@@ -123,7 +123,7 @@ public abstract class BasePopFullScreen extends BasePop<Container> {
         return this;
     }
 
-    protected Resources getResources(){
+    protected Resources getResources() {
         return mBase.getResources();
     }
 
@@ -132,34 +132,31 @@ public abstract class BasePopFullScreen extends BasePop<Container> {
         return this;
     }
 
-    public boolean isShow(){
+    public boolean isShow() {
         return isShow;
     }
 
-    public void beforeShow(){   //弹窗显示之前执行
-        if (myPopListener !=null){
+    public void beforeShow() {   //弹窗显示之前执行
+        if (myPopListener != null) {
             myPopListener.beforeShow();
         }
         initAnimator();
     }
 
-    public void beforeDismiss(){
-        if (myPopListener !=null){
+    public void beforeDismiss() {
+        if (myPopListener != null) {
             myPopListener.beforeDismiss();
         }
     }
+
     protected void onDismiss() {
 
     }
 
 
-
-
-
-
-    protected int getMaxWidth(){return 0;}
-
-
+    protected int getMaxWidth() {
+        return 0;
+    }
 
 
 }

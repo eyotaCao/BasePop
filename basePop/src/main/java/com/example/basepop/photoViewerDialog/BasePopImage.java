@@ -46,12 +46,9 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
     protected PhotoView mPhoto;
     private String url;
     private Rect rect;
-    protected boolean isShow=false,isShowBg=true, isAboveNavi = false;
+    protected boolean isShow = false, isShowBg = true, isAboveNavi = false;
     //contentAnimate
-
     protected static final int animationDuration = 480; //弹窗打开/关闭动画时长
-
-
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final boolean isZeroDuration = false;
@@ -59,48 +56,44 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
     private LoadImage loadImage;
 
 
-    public BasePopImage(Activity activity){
+    public BasePopImage(Activity activity) {
         super(activity);
         setLayout(getImplLayoutId());
     }
 
 
-    public void setLayout(int layout){
-        this.layout=layout;
+    public void setLayout(int layout) {
+        this.layout = layout;
     }
 
+    @Override
     @SuppressLint("ResourceType")
-    protected void onCreate(){  //加入弹窗
-        super.onCreate();
-        if (!isShowBg){
-            shadowBgColor= R.color.transparent;
+    protected void onCreate() {  //加入弹窗
+        if (!isShowBg) {
+            shadowBgColor = R.color.transparent;
         }
-
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mContent= LayoutInflater.from(activity).inflate(layout,mBase,false);
-      //  mContent.setBackgroundColor(getResources().getColor(R.color.color2866FE));
-
-        mContainer=new PhotoViewContainer(activity);
+        mContent = LayoutInflater.from(activity).inflate(layout, mBase, false);
+        mContainer = new PhotoViewContainer(activity);
         setPhoto(mContent.findViewById(R.id.dialog_image_photo));
         if (isAboveNavi) {
             try {
-                int resourceId=getResources().getIdentifier("navigation_bar_height","dimen","android");
+                @SuppressLint("InternalInsetResource") int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
                 int height = getResources().getDimensionPixelSize(resourceId);
-                FrameLayout.LayoutParams flpBa=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT);
-                flpBa.bottomMargin=height;
+                FrameLayout.LayoutParams flpBa = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+                flpBa.bottomMargin = height;
                 mBase.setLayoutParams(flpBa);
-            }catch (Exception ignored){}
-        }
-
-        if (mPhoto!=null){
-            if (srcView !=null){
-                mPhoto.setImageDrawable(srcView.getDrawable());
-                //initParam();
+            } catch (Exception ignored) {
             }
-            if (loadImage!=null){
+        }
+        if (mPhoto != null) {
+            if (srcView != null) {
+                mPhoto.setImageDrawable(srcView.getDrawable());
+            }
+            if (loadImage != null) {
                 loadImage.onLoad(mPhoto);
-            }else {
+            } else {
                 Glide.with(activity).load(url).into(mPhoto);
             }
             mPhoto.setOnViewTapListener((view, x, y) -> dismiss());
@@ -115,16 +108,14 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
                 public void onDragChange(int dy, float scale, float fraction) {
 
 
-                    mBaseView.setBackgroundColor((Integer) argbEvaluator.evaluate(fraction * .8f,shadowBgColor, Color.TRANSPARENT));
+                    mBaseView.setBackgroundColor((Integer) argbEvaluator.evaluate(fraction * .8f, shadowBgColor, Color.TRANSPARENT));
                 }
             });
         }
 
-        FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        flp.gravity= Gravity.CENTER;
+        FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        flp.gravity = Gravity.CENTER;
         mContainer.setLayoutParams(flp);
-      /*  mContainer.setMaxHeight(maxHeight);
-        mContainer.setMaxWidth(maxWidth);*/
         mContainer.setClipChildren(false);
         mContainer.addView(mContent);
         mBase.addView(mContainer);
@@ -133,10 +124,10 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
     public void initAnimator() {
         if (srcView != null && activity != null) {
             int[] locations = ViewUtils.getLocation(srcView);
-            if(isLayoutRtl(activity)){
+            if (isLayoutRtl(activity)) {
                 int left = -(PxTool.getWindowWidthAndHeight(activity)[0] - locations[0] - srcView.getWidth());
                 rect = new Rect(left, locations[1], left + srcView.getWidth(), locations[1] + srcView.getHeight());
-            }else {
+            } else {
                 rect = new Rect(locations[0], locations[1], locations[0] + srcView.getWidth(), locations[1] + srcView.getHeight());
             }
         }
@@ -145,25 +136,25 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
 
     public void animateShow() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onShow();
         }
         mPhoto.post(() -> {
             TransitionManager.beginDelayedTransition((ViewGroup) mPhoto.getParent(), new TransitionSet()
-                    .setDuration(animationDuration)
-                    .addTransition(new ChangeBounds())
-                    .addTransition(new ChangeTransform())
-                    .addTransition(new ChangeImageTransform())
-                    .setInterpolator(new FastOutSlowInInterpolator()));
+                .setDuration(animationDuration)
+                .addTransition(new ChangeBounds())
+                .addTransition(new ChangeTransform())
+                .addTransition(new ChangeImageTransform())
+                .setInterpolator(new FastOutSlowInInterpolator()));
             mPhoto.setScaleY(1);
             mPhoto.setScaleX(1);
             mPhoto.setTranslationY(0);
             mPhoto.setTranslationX(0);
 
         });
-        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor,shadowBgColor );
+        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor, shadowBgColor);
         animator.addUpdateListener(animation -> {
-            if (isShowBg){
+            if (isShowBg) {
                 mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
@@ -175,24 +166,24 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
 
     }
 
     public void animateDismiss() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onDismiss();
         }
         mPhoto.post(() -> {
             TransitionManager.beginDelayedTransition((ViewGroup) mContent.getParent(), new TransitionSet()
-                    .setDuration(animationDuration)
-                    .addTransition(new ChangeBounds())
-                    .addTransition(new ChangeTransform())
-                    .addTransition(new ChangeImageTransform())
-                    .setInterpolator(new FastOutSlowInInterpolator()));
-            FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            flp.gravity= Gravity.CENTER;
+                .setDuration(animationDuration)
+                .addTransition(new ChangeBounds())
+                .addTransition(new ChangeTransform())
+                .addTransition(new ChangeImageTransform())
+                .setInterpolator(new FastOutSlowInInterpolator()));
+            FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            flp.gravity = Gravity.CENTER;
             mContainer.setLayoutParams(flp);
             mContent.setScaleX(1);
             mContent.setScaleY(1);
@@ -202,7 +193,7 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
         final int start = ((ColorDrawable) mBaseView.getBackground()).getColor();
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, start, startColor);
         animator.addUpdateListener(animation -> {
-            if (isShowBg){
+            if (isShowBg) {
                 mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
@@ -213,15 +204,16 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
                 showState = BasePopConstants.SHOW_STATE_DISMISS;
                 try {
                     mParent.removeView(mBase);
-                }catch (Exception ignored){}
+                } catch (Exception ignored) {
+                }
 
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
     }
 
-    public <T extends View> T findViewById(int id){
+    public <T extends View> T findViewById(int id) {
         return mContent.findViewById(id);
     }
 
@@ -243,7 +235,7 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
 
 
     public BasePopImage setShowBg(boolean isShowBg) {
-        this.isShowBg=isShowBg;
+        this.isShowBg = isShowBg;
         return this;
     }
 
@@ -263,36 +255,35 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
         return this;
     }
 
-    private void initParam(){
+    private void initParam() {
         mPhoto.attacher.reset();
         float screenWidth = (float) PxTool.screenWidth;
         mPhoto.setScaleX((float) (rect.width()) / screenWidth);
-        mPhoto.setScaleY((float) (rect.width())/ screenWidth);
-        float tranX = -(float)(screenWidth-rect.width())/2f-rect.left;
-        float tranY = -(float)((mParent.getMeasuredHeight()-rect.height())/2f-rect.top);
+        mPhoto.setScaleY((float) (rect.width()) / screenWidth);
+        float tranX = -(float) (screenWidth - rect.width()) / 2f - rect.left;
+        float tranY = -(float) ((mParent.getMeasuredHeight() - rect.height()) / 2f - rect.top);
         mPhoto.setTranslationX(tranX);
         mPhoto.setTranslationY(tranY);
     }
 
 
-    protected Resources getResources(){
+    protected Resources getResources() {
         return mBase.getResources();
     }
 
-
-    public boolean isShow(){
+    public boolean isShow() {
         return isShow;
     }
 
-    public void beforeShow(){   //弹窗显示之前执行
-        if (myPopListener !=null){
+    public void beforeShow() {   //弹窗显示之前执行
+        if (myPopListener != null) {
             myPopListener.beforeShow();
         }
         initAnimator();
     }
 
-    public void beforeDismiss(){
-        if (myPopListener !=null){
+    public void beforeDismiss() {
+        if (myPopListener != null) {
             myPopListener.beforeDismiss();
         }
     }
@@ -303,14 +294,13 @@ public abstract class BasePopImage extends BasePop<PhotoViewContainer> {
         return this;
     }
 
-
-    public interface LoadImage{
+    public interface LoadImage {
         void onLoad(ImageView view);
     }
+
     //可自定义加载大图方式
     public BasePopImage setLoadImage(LoadImage loadImage) {
         this.loadImage = loadImage;
         return this;
     }
-
 }

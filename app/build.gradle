@@ -33,17 +33,12 @@ android {
 
 
 dependencies {
-
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
     implementation 'androidx.navigation:navigation-ui:2.3.5'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-
-//    implementation(libsDirectory.file("base"))
-    //https://github.com/ccmw123/BasePop.git
-  //  implementation 'com.github.ccmw123:BasePop:1.0.2'
 
     implementation project(':basePop') // 添加依赖模块
 }

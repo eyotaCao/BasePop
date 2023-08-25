@@ -17,11 +17,8 @@ public class BottomChat extends BasePopChat {
 
     }
 
-
     @Override
     protected int getImplLayoutId() {
         return R.layout.dialog_bottom_chat;
     }
-
-
 }

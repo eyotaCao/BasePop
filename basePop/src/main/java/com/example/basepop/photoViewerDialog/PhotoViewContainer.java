@@ -22,16 +22,19 @@ public class PhotoViewContainer extends FrameLayout {
     private ViewDragHelper dragHelper;
     public LinearLayout content;
     private int HideTopThreshold = 80;
-    private int maxOffset,maxOffsetX;
-    private float dx,dy;
+    private int maxOffset, maxOffsetX;
+    private float dx, dy;
     private OnDragChangeListener dragChangeListener;
     public boolean isReleasing = false;
+
     public PhotoViewContainer(@NonNull Context context) {
         this(context, null);
     }
+
     public PhotoViewContainer(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
+
     public PhotoViewContainer(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
@@ -51,15 +54,15 @@ public class PhotoViewContainer extends FrameLayout {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         maxOffset = getHeight() / 3;
-        maxOffsetX=getWidth()/2;
+        maxOffsetX = getWidth() / 2;
     }
 
-    boolean isVertical = false,isHor;
+    boolean isVertical = false, isHor;
     private float touchX, touchY;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getPointerCount() > 1 ) return super.dispatchTouchEvent(ev);
+        if (ev.getPointerCount() > 1) return super.dispatchTouchEvent(ev);
         try {
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -77,47 +80,49 @@ public class PhotoViewContainer extends FrameLayout {
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    dx=0;
-                    dy=0;
+                    dx = 0;
+                    dy = 0;
                     touchX = 0;
                     touchY = 0;
                     isVertical = false;
-                    isHor=false;
+                    isHor = false;
                     break;
             }
-        }catch (Exception e){ }
+        } catch (Exception e) {
+        }
         return super.dispatchTouchEvent(ev);
     }
 
-    private boolean isTopOrBottomEnd(){
+    private boolean isTopOrBottomEnd() {
         PhotoView photoView = getCurrentPhotoView();
-        return photoView!=null && (photoView.attacher.isTopEnd || photoView.attacher.isBottomEnd);
+        return photoView != null && (photoView.attacher.isTopEnd || photoView.attacher.isBottomEnd);
     }
 
-    private boolean isLeftOrRightEnd(){
+    private boolean isLeftOrRightEnd() {
         PhotoView photoView = getCurrentPhotoView();
-        return photoView!=null && (photoView.attacher.isLeftEnd || photoView.attacher.isRightEnd);
+        return photoView != null && (photoView.attacher.isLeftEnd || photoView.attacher.isRightEnd);
     }
 
-    private PhotoView getCurrentPhotoView(){
-        return  (PhotoView) content.getChildAt(0);
+    private PhotoView getCurrentPhotoView() {
+        return (PhotoView) content.getChildAt(0);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         boolean result = dragHelper.shouldInterceptTouchEvent(ev);
-        if (ev.getPointerCount() > 1 && ev.getAction()==MotionEvent.ACTION_MOVE) return false;
-        if (isTopOrBottomEnd()  && isVertical)return true;
+        if (ev.getPointerCount() > 1 && ev.getAction() == MotionEvent.ACTION_MOVE) return false;
+        if (isTopOrBottomEnd() && isVertical) return true;
         return isVertical;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        System.out.println("adsadecent"+ev.getAction());
-        if (ev.getPointerCount() > 1 ) return false;
+        System.out.println("adsadecent" + ev.getAction());
+        if (ev.getPointerCount() > 1) return false;
         try {
             dragHelper.processTouchEvent(ev);
-        }catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
         return true;
     }
 
@@ -204,6 +209,7 @@ public class PhotoViewContainer extends FrameLayout {
 
     public interface OnDragChangeListener {
         void onRelease();
+
         void onDragChange(int dy, float scale, float fraction);
     }
 }

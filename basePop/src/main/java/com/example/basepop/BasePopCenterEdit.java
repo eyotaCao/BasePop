@@ -30,7 +30,7 @@ import java.util.List;
 
 //中心弹框  中心弹出动画 有编辑框自动弹起
 public abstract class BasePopCenterEdit extends BasePop<Container> {
-    protected boolean isShow=false,isShowBg=true,isAutoEdit=false;
+    protected boolean isShow = false, isShowBg = true, isAutoEdit = false;
     //contentAnimate
     float startScale = .75f;
     private List<EditText> mEdits;
@@ -38,40 +38,41 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final boolean isZeroDuration = false;
-    private boolean isConScrollAble=false;
+    private boolean isConScrollAble = false;
 
-    public BasePopCenterEdit(Activity activity){
+    public BasePopCenterEdit(Activity activity) {
         super(activity);
         setLayout(getImplLayoutId());
     }
 
 
-    public void setLayout(int layout){
-        this.layout=layout;
+    public void setLayout(int layout) {
+        this.layout = layout;
     }
 
-    protected void onCreate(){  //加入弹窗
-        super.onCreate();
-        if (!isShowBg){
-            shadowBgColor= R.color.transparent;
+    @Override
+    protected void onCreate() {  //加入弹窗
+        if (!isShowBg) {
+            shadowBgColor = R.color.transparent;
         }
         //初始高度
         int maxWidth = getMaxWidth();
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mContent= LayoutInflater.from(activity).inflate(layout,mBase,false);
-        mContainer=new Container(activity,isConScrollAble);
+        mContent = LayoutInflater.from(activity).inflate(layout, mBase, false);
+        mContainer = new Container(activity, isConScrollAble);
 
-        FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        flp.gravity= Gravity.CENTER;
+        FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        flp.gravity = Gravity.CENTER;
         mContainer.setLayoutParams(flp);
         mContainer.setMaxHeight(maxHeight);
         mContainer.setMaxWidth(maxWidth);
         mContainer.addView(mContent);
         mBase.addView(mContainer);
-        if (isAutoEdit){
+        if (isAutoEdit) {
             try {
                 initAutoEdit();
-            }catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
 
         }
     }
@@ -84,17 +85,17 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
 
     public void animateShow() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onShow();
         }
         mContainer.post(() -> mContainer.animate().scaleX(1f).scaleY(1f).alpha(1f)
-                .setDuration(animationDuration)
-                .setInterpolator(new OvershootInterpolator(1f))
+            .setDuration(animationDuration)
+            .setInterpolator(new OvershootInterpolator(1f))
 //                .withLayer() 在部分6.0系统会引起crash
-                .start());
-        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor,shadowBgColor );
+            .start());
+        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor, shadowBgColor);
         animator.addUpdateListener(animation -> {
-            if (isShowBg){
+            if (isShowBg) {
                 mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
@@ -106,61 +107,65 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
 
     }
-    private void initAutoEdit(){
-        mEdits=new ArrayList<>();
+
+    private void initAutoEdit() {
+        mEdits = new ArrayList<>();
         traversalView(mContainer);
-        int screenHei= PxTool.getScreenHeight();
+        int screenHei = PxTool.getScreenHeight();
         SoftUtils.addSoftListener(activity, (change, isShow) -> {
-            if (isShow){
-                if (mEdits.size()>0){
-                    int []location= ViewUtils.getLocation(mContainer);
+            if (isShow) {
+                if (mEdits.size() > 0) {
+                    int[] location = ViewUtils.getLocation(mContainer);
 
-                    if (screenHei-location[1]<Math.abs(change)+mContent.getMeasuredHeight()){
+                    if (screenHei - location[1] < Math.abs(change) + mContent.getMeasuredHeight()) {
 
-                        ViewPropertyAnimator animator2 ;
-                        animator2 = mContainer.animate().translationY(-(Math.abs(change)-screenHei+location[1]+mContainer.getMeasuredHeight()));
-                        if(animator2!=null)animator2.setInterpolator(new FastOutSlowInInterpolator())
+                        ViewPropertyAnimator animator2;
+                        animator2 = mContainer.animate().translationY(-(Math.abs(change) - screenHei + location[1] + mContainer.getMeasuredHeight()));
+                        if (animator2 != null)
+                            animator2.setInterpolator(new FastOutSlowInInterpolator())
                                 .setDuration(200)
                                 //  .withLayer()
                                 .start();
                     }
                 }
-            }else {
-                ViewPropertyAnimator animator2 ;
+            } else {
+                ViewPropertyAnimator animator2;
                 animator2 = mContainer.animate().translationY(0);
-                if(animator2!=null)animator2.setInterpolator(new FastOutSlowInInterpolator())
-                        .setDuration(200)
-                        //  .withLayer()
-                        .start();
+                if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
+                    .setDuration(200)
+                    //  .withLayer()
+                    .start();
                 mBase.init();
             }
         });
 
     }
-    private void traversalView(ViewGroup viewGroup){
-        for (int i=0;i<viewGroup.getChildCount();i++){
-            if (viewGroup.getChildAt(i) instanceof ViewGroup){
+
+    private void traversalView(ViewGroup viewGroup) {
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            if (viewGroup.getChildAt(i) instanceof ViewGroup) {
                 traversalView((ViewGroup) viewGroup.getChildAt(i));
-            }else if (viewGroup.getChildAt(i) instanceof EditText){
+            } else if (viewGroup.getChildAt(i) instanceof EditText) {
                 mEdits.add((EditText) viewGroup.getChildAt(i));
             }
         }
     }
+
     public void animateDismiss() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onDismiss();
         }
         mContainer.animate().scaleX(startScale).scaleY(startScale).alpha(0f).setDuration(animationDuration)
-                .setInterpolator(new FastOutSlowInInterpolator())
+            .setInterpolator(new FastOutSlowInInterpolator())
 //                .withLayer() 在部分6.0系统会引起crash
-                .start();
+            .start();
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, startColor);
         animator.addUpdateListener(animation -> {
-            if (isShowBg){
+            if (isShowBg) {
                 mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
@@ -168,21 +173,23 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                Log.i("dasda","dsds");
+                Log.i("dasda", "dsds");
                 showState = BasePopConstants.SHOW_STATE_DISMISS;
                 try {
                     mParent.removeView(mBase);
-                }catch (Exception ignored){}
+                } catch (Exception ignored) {
+                }
 
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
     }
 
-    public <T extends View> T findViewById(int id){
+    public <T extends View> T findViewById(int id) {
         return mContent.findViewById(id);
     }
+
     //自动弹起
     public BasePopCenterEdit setAutoEdit(boolean autoEdit) {
         isAutoEdit = autoEdit;
@@ -197,12 +204,12 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
     }
 
     public BasePopCenterEdit setMaxHeight(int max) {
-        maxHeight=max;
+        maxHeight = max;
         return this;
     }
 
     public BasePopCenterEdit setShowBg(boolean isShowBg) {
-        this.isShowBg=isShowBg;
+        this.isShowBg = isShowBg;
         return this;
     }
 
@@ -211,7 +218,7 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
         return this;
     }
 
-    protected Resources getResources(){
+    protected Resources getResources() {
         return mBase.getResources();
     }
 
@@ -220,24 +227,26 @@ public abstract class BasePopCenterEdit extends BasePop<Container> {
         return this;
     }
 
-    public boolean isShow(){
+    public boolean isShow() {
         return isShow;
     }
 
-    public void beforeShow(){   //弹窗显示之前执行
-        if (myPopListener !=null){
+    public void beforeShow() {   //弹窗显示之前执行
+        if (myPopListener != null) {
             myPopListener.beforeShow();
         }
         initAnimator();
     }
 
-    public void beforeDismiss(){
-        if (myPopListener !=null){
+    public void beforeDismiss() {
+        if (myPopListener != null) {
             myPopListener.beforeDismiss();
         }
     }
 
-    protected int getMaxWidth(){return (int) (PxTool.getScreenWidth()*0.85);}
+    protected int getMaxWidth() {
+        return (int) (PxTool.getScreenWidth() * 0.85);
+    }
 
 
 }

@@ -15,10 +15,10 @@ import androidx.annotation.NonNull;
 
 import com.example.basepop.utils.PxTool;
 
-
 /**
- * @desc 所有弹窗基类
- * @author cwj
+ * 弹窗基类
+ *
+ * @since 2023-8-25
  */
 public abstract class BasePop <T extends ViewGroup> {
     protected Activity activity;  //依附的活动
@@ -53,74 +53,39 @@ public abstract class BasePop <T extends ViewGroup> {
 
     protected int showState = 0; //弹窗显示状态   0未显示，1正在显示，2已显示 3正在消失 4.已消失
 
-    protected int maxHeight=0;  //弹窗最大高度
+    protected int maxHeight = 0;  //弹窗最大高度
 
     public BasePop(@NonNull Activity activity) {
         this.activity = activity;
         setLayout(getImplLayoutId());
-        if (PxTool.mContext==null){
+        if (PxTool.mContext == null) {
             PxTool.initContext(activity);
         }
     }
 
-    protected void onCreate() {
-        mBaseView=new BackgroundView(activity);
-        maxHeight=getMaxHeight();
-        mBase=new Background(activity,()->{
-            if (myPopListener !=null){
-                myPopListener.onBack();
-            }
-            if (dismissOnBack){
-                dismiss();
-            }
-        });
-        mBase.setClickThrough(isClickThrough);
-
-        mBaseView=new BackgroundView(activity);
-        mBaseView.setOnback(()->{
-            if (dismissTouchOutside){
-                dismiss();
-            }
-        });
-        FrameLayout.LayoutParams flp2=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mBaseView.setLayoutParams(flp2);
-
-        mBase.addView(mBaseView);  //背景
-        //(FrameLayout) activity.findViewById(android.R.id.content);
-        mParent = (FrameLayout) activity.getWindow().getDecorView();
-        mParent.addView(mBase);
-        isCreate=true;
+    public void setLayout(int layout) {
+        this.layout = layout;
     }
-
-
-
-    public void setLayout(int layout){
-        this.layout=layout;
-    }
-
-    /**
-     * 需要子类实现，获取需要显示内容的布局文件
-     */
-    protected abstract int getImplLayoutId();
 
     /**
      * 打开弹窗
      */
-    public void show(){
-        if (showState == SHOW_STATE_SHOWING||showState == SHOW_STATE_SHOW){
-            if (showState == SHOW_STATE_SHOW){
+    public void show() {
+        if (showState == SHOW_STATE_SHOWING || showState == SHOW_STATE_SHOW) {
+            if (showState == SHOW_STATE_SHOW) {
                 dismiss();
             }
             return;
         }
         showState = SHOW_STATE_SHOWING;
-        if (!isCreate){
-            onCreate();
-        }else {
+        if (!isCreate) {
+            create();
+        } else {
             try {
                 mParent.addView(mBase);
                 mBase.init();
-            }catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
         }
         beforeShow();
         animateShow();
@@ -129,24 +94,14 @@ public abstract class BasePop <T extends ViewGroup> {
     /**
      * 关闭弹窗
      */
-    public void dismiss(){
-        if (showState == SHOW_STATE_DISMISSING || showState == SHOW_STATE_DISMISS){
+    public void dismiss() {
+        if (showState == SHOW_STATE_DISMISSING || showState == SHOW_STATE_DISMISS) {
             return;
         }
         showState = SHOW_STATE_DISMISSING;
         beforeDismiss();
         animateDismiss();
     }
-
-    protected abstract void beforeShow();
-    protected abstract void animateShow();
-    protected abstract void beforeDismiss();
-    protected abstract void animateDismiss();
-
-
-    protected int getMaxHeight() {
-        return 0;
-    };
 
     public BasePop<T> setClickThrough(boolean clickThrough) {
         isClickThrough = clickThrough;
@@ -177,10 +132,58 @@ public abstract class BasePop <T extends ViewGroup> {
      */
     public void addLoading(View loadingView) {
         try {
-            if (mContainer!=null && loadingView!=null){
+            if (mContainer != null && loadingView != null) {
                 mContainer.addView(loadingView);
             }
-        }catch (Exception ignored){}
+        } catch (Throwable ignored) {
+        }
     }
 
+    private void create() {
+        mBaseView = new BackgroundView(activity);
+        maxHeight = getMaxHeight();
+        mBase = new Background(activity, () -> {
+            if (myPopListener != null) {
+                myPopListener.onBack();
+            }
+            if (dismissOnBack) {
+                dismiss();
+            }
+        });
+        mBase.setClickThrough(isClickThrough);
+
+        mBaseView = new BackgroundView(activity);
+        mBaseView.setOnback(() -> {
+            if (dismissTouchOutside) {
+                dismiss();
+            }
+        });
+        FrameLayout.LayoutParams flp2 = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mBaseView.setLayoutParams(flp2);
+
+        mBase.addView(mBaseView);  //背景
+        //(FrameLayout) activity.findViewById(android.R.id.content);
+        mParent = (FrameLayout) activity.getWindow().getDecorView();
+        mParent.addView(mBase);
+        isCreate = true;
+    }
+
+    protected abstract void onCreate();
+
+    /**
+     * 需要子类实现，获取需要显示内容的布局文件
+     */
+    protected abstract int getImplLayoutId();
+
+    protected abstract void beforeShow();
+
+    protected abstract void animateShow();
+
+    protected abstract void beforeDismiss();
+
+    protected abstract void animateDismiss();
+
+    protected int getMaxHeight() {
+        return 0;
+    }
 }

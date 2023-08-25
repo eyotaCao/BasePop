@@ -31,11 +31,11 @@ public class BackgroundView extends View {  //弹窗背景 不可穿透
     }
 
 
-    private void init(){
+    private void init() {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mOnBack!=null){
+                if (mOnBack != null) {
                     mOnBack.onback();
                 }
             }
@@ -50,12 +50,13 @@ public class BackgroundView extends View {  //弹窗背景 不可穿透
     }
 
     private float x, y;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (isClickThrough){
+        if (isClickThrough) {
             return false;
-        }else {
+        } else {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     x = event.getX();
@@ -63,7 +64,7 @@ public class BackgroundView extends View {  //弹窗背景 不可穿透
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    if (Math.abs(x-event.getX())<10&&Math.abs(y-event.getY())<10){
+                    if (Math.abs(x - event.getX()) < 10 && Math.abs(y - event.getY()) < 10) {
                         mOnBack.onback();
                     }
                     break;
@@ -78,11 +79,12 @@ public class BackgroundView extends View {  //弹窗背景 不可穿透
     }
 
 
-    public interface onBack{
+    public interface onBack {
         void onback();
     }
-    public void setOnback(onBack onBack){
-        mOnBack=onBack;
+
+    public void setOnback(onBack onBack) {
+        mOnBack = onBack;
     }
 
 }

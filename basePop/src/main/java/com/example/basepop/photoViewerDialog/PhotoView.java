@@ -159,7 +159,8 @@ public class PhotoView extends AppCompatImageView {
         attacher.getDisplayMatrix(matrix);
     }
 
-    @SuppressWarnings("UnusedReturnValue") public boolean setDisplayMatrix(Matrix finalRectangle) {
+    @SuppressWarnings("UnusedReturnValue")
+    public boolean setDisplayMatrix(Matrix finalRectangle) {
         return attacher.setDisplayMatrix(finalRectangle);
     }
 
@@ -254,15 +255,19 @@ public class PhotoView extends AppCompatImageView {
     public void setOnSingleFlingListener(OnSingleFlingListener onSingleFlingListener) {
         attacher.setOnSingleFlingListener(onSingleFlingListener);
     }
+
     public interface OnPhotoTapListener {
         void onPhotoTap(ImageView view, float x, float y);
     }
+
     public interface OnScaleChangedListener {
         void onScaleChange(float scaleFactor, float focusX, float focusY);
     }
+
     public interface OnSingleFlingListener {
         boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY);
     }
+
     public interface OnViewTapListener {
         void onViewTap(View view, float x, float y);
     }
@@ -270,13 +275,14 @@ public class PhotoView extends AppCompatImageView {
     public interface OnOutsidePhotoTapListener {
         void onOutsidePhotoTap(ImageView imageView);
     }
+
     public interface OnMatrixChangedListener {
         void onMatrixChanged(RectF rect);
     }
+
     public interface OnViewDragListener {
         void onDrag(float dx, float dy);
     }
-
 
 
 }

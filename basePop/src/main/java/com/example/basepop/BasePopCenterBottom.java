@@ -24,27 +24,25 @@ import com.example.basepop.utils.ViewUtils;
 //中心弹框 从底部弹出
 public abstract class BasePopCenterBottom extends BasePop<Container> {
 
-    private int maxHeight=0;  //初始高度
-    private int needTop,screenHeight;
+    private int maxHeight = 0;  //初始高度
+    private int needTop, screenHeight;
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final boolean isZeroDuration = false;
-    private boolean isConScrollAble=false;
+    private boolean isConScrollAble = false;
 
-    public BasePopCenterBottom(Activity activity){
+    public BasePopCenterBottom(Activity activity) {
         super(activity);
     }
 
-
-
-    protected void onCreate(){  //加入弹窗
-        super.onCreate();
-        screenHeight= PxTool.getScreenHeight();
+    @Override
+    protected void onCreate() {  //加入弹窗
+        screenHeight = PxTool.getScreenHeight();
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mContent= LayoutInflater.from(activity).inflate(layout,mBase,false);
-        mContainer=new Container(activity,isConScrollAble);
+        mContent = LayoutInflater.from(activity).inflate(layout, mBase, false);
+        mContainer = new Container(activity, isConScrollAble);
 
-        FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         flp.gravity = Gravity.CENTER_HORIZONTAL;
         mContainer.setLayoutParams(flp);
         mContainer.setMaxHeight(maxHeight);
@@ -59,22 +57,22 @@ public abstract class BasePopCenterBottom extends BasePop<Container> {
         int oldHeight = ViewUtils.getMaxHeight(mContainer);
 
         mContainer.setTranslationY(screenHeight);
-        needTop=(int)((float)(screenHeight- oldHeight)/2f);
+        needTop = (int) ((float) (screenHeight - oldHeight) / 2f);
     }
 
     public void animateShow() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onShow();
         }
         ViewPropertyAnimator animator2;
         animator2 = mContainer.animate().translationY(needTop);
-        if(animator2!=null)animator2.setInterpolator(new FastOutSlowInInterpolator())
-                .setDuration(animationDuration)
-              //  .withLayer()
-                .start();
+        if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
+            .setDuration(animationDuration)
+            //  .withLayer()
+            .start();
 
-        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor,shadowBgColor );
+        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor, shadowBgColor);
         animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -84,20 +82,20 @@ public abstract class BasePopCenterBottom extends BasePop<Container> {
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
     }
 
     public void animateDismiss() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onDismiss();
         }
         ViewPropertyAnimator animator2;
         animator2 = mContainer.animate().translationY(screenHeight);
-        if(animator2!=null)animator2.setInterpolator(new FastOutSlowInInterpolator())
-                .setDuration(animationDuration)
-                .withLayer()
-                .start();
+        if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
+            .setDuration(animationDuration)
+            .withLayer()
+            .start();
 
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, startColor);
         animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
@@ -110,10 +108,10 @@ public abstract class BasePopCenterBottom extends BasePop<Container> {
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
     }
 
-    public <T extends View> T findViewById(int id){
+    public <T extends View> T findViewById(int id) {
         return mContent.findViewById(id);
     }
 
@@ -125,7 +123,7 @@ public abstract class BasePopCenterBottom extends BasePop<Container> {
     }
 
     public BasePopCenterBottom setMaxHeight(int max) {
-        maxHeight=max;
+        maxHeight = max;
         return this;
     }
 
@@ -135,7 +133,7 @@ public abstract class BasePopCenterBottom extends BasePop<Container> {
         return this;
     }
 
-    protected Resources getResources(){
+    protected Resources getResources() {
         return mBase.getResources();
     }
 
@@ -145,15 +143,15 @@ public abstract class BasePopCenterBottom extends BasePop<Container> {
     }
 
 
-    public void beforeShow(){   //弹窗显示之前执行
-        if (myPopListener !=null){
+    public void beforeShow() {   //弹窗显示之前执行
+        if (myPopListener != null) {
             myPopListener.beforeShow();
         }
         initAnimator();
     }
 
-    public void beforeDismiss(){
-        if (myPopListener !=null){
+    public void beforeDismiss() {
+        if (myPopListener != null) {
             myPopListener.beforeDismiss();
         }
     }

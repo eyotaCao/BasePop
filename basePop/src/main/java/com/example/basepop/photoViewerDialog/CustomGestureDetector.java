@@ -27,7 +27,7 @@ class CustomGestureDetector {
 
     CustomGestureDetector(Context context, OnGestureListener listener) {
         final ViewConfiguration configuration = ViewConfiguration
-                .get(context);
+            .get(context);
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
         mTouchSlop = configuration.getScaledTouchSlop();
 
@@ -41,7 +41,7 @@ class CustomGestureDetector {
                     return false;
                 if (scaleFactor >= 0) {
                     mListener.onScale(scaleFactor,
-                            detector.getFocusX(), detector.getFocusY());
+                        detector.getFocusX(), detector.getFocusY());
                 }
                 return true;
             }
@@ -85,7 +85,7 @@ class CustomGestureDetector {
 
     public boolean onTouchEvent(MotionEvent ev) {
         try {
-            if(ev.getPointerCount()>1)
+            if (ev.getPointerCount() > 1)
                 mDetector.onTouchEvent(ev);
             return processTouchEvent(ev);
         } catch (IllegalArgumentException e) {
@@ -150,13 +150,13 @@ class CustomGestureDetector {
                         mVelocityTracker.computeCurrentVelocity(1000);
 
                         final float vX = mVelocityTracker.getXVelocity(), vY = mVelocityTracker
-                                .getYVelocity();
+                            .getYVelocity();
 
                         // If the velocity is greater than minVelocity, call
                         // listener
                         if (Math.max(Math.abs(vX), Math.abs(vY)) >= mMinimumVelocity) {
                             mListener.onFling(mLastTouchX, mLastTouchY, -vX,
-                                    -vY);
+                                -vY);
                         }
                     }
                 }
@@ -182,8 +182,8 @@ class CustomGestureDetector {
         }
 
         mActivePointerIndex = ev
-                .findPointerIndex(mActivePointerId != INVALID_POINTER_ID ? mActivePointerId
-                        : 0);
+            .findPointerIndex(mActivePointerId != INVALID_POINTER_ID ? mActivePointerId
+                : 0);
         return true;
     }
 }

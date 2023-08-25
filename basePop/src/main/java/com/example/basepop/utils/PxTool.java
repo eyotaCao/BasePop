@@ -27,7 +27,7 @@ public class PxTool {
 
     @SuppressLint("StaticFieldLeak")
     public static Context mContext;
-    public static float scale ;
+    public static float scale;
     public static int screenHeight;
     public static int screenWidth;
 
@@ -52,12 +52,12 @@ public class PxTool {
     }
 
 
-    public static void initContext(Context context){
-        mContext=context;
+    public static void initContext(Context context) {
+        mContext = context;
         scale = mContext.getResources().getDisplayMetrics().density;
-        int []wh=getScreenSize(context);
-        screenWidth=wh[0];
-        screenHeight =wh[1];
+        int[] wh = getScreenSize(context);
+        screenWidth = wh[0];
+        screenHeight = wh[1];
     }
 
     public static int getWindowHeight(Activity activity) {
@@ -67,6 +67,7 @@ public class PxTool {
     /**
      * 判断是否显示了导航栏
      * (说明这里的context 一定要是activity的context 否则类型转换失败)
+     *
      * @return 是否显示了导航栏
      */
     public static boolean isShowNavBar(Context context) {
@@ -104,7 +105,7 @@ public class PxTool {
     }
 
     public int getNavHeight(Resources resources) {
-        int resourceId=resources.getIdentifier("navigation_bar_height","dimen","android");
+        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
         return resources.getDimensionPixelSize(resourceId);
     }
 
@@ -127,10 +128,11 @@ public class PxTool {
      * 获取真实屏幕高度
      */
     private static WindowManager wm;
+
     public static int getRealHeight(Context context) {
         if (null == wm) {
             wm = (WindowManager)
-                    context.getSystemService(Context.WINDOW_SERVICE);
+                context.getSystemService(Context.WINDOW_SERVICE);
         }
         Point point = new Point();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -147,7 +149,6 @@ public class PxTool {
     }
 
 
-
     public static int dpToPx(float value) {
         return (int) (scale * value + 0.5f);
     }
@@ -155,21 +156,21 @@ public class PxTool {
 
     public static boolean checkDeviceHasNavigationBar(Context context) {
         boolean hasMenuKey = ViewConfiguration.get(context)
-                .hasPermanentMenuKey();
+            .hasPermanentMenuKey();
         boolean hasBackKey = KeyCharacterMap
-                .deviceHasKey(KeyEvent.KEYCODE_BACK);
+            .deviceHasKey(KeyEvent.KEYCODE_BACK);
         return !hasMenuKey & !hasBackKey;
     }
 
-    public static int getScreenHeight(){
+    public static int getScreenHeight() {
         return (int) screenHeight;
     }
 
-    public static int[] getWindowWidthAndHeight(Activity activity){
-        int [] wh=new int[2];
-        ViewGroup mParent =(ViewGroup) activity.getWindow().getDecorView();
-        wh[0]=mParent.getMeasuredWidth();
-        wh[1]=mParent.getMeasuredHeight();
+    public static int[] getWindowWidthAndHeight(Activity activity) {
+        int[] wh = new int[2];
+        ViewGroup mParent = (ViewGroup) activity.getWindow().getDecorView();
+        wh[0] = mParent.getMeasuredWidth();
+        wh[1] = mParent.getMeasuredHeight();
         return wh;
     }
 
@@ -177,9 +178,9 @@ public class PxTool {
         return screenWidth;
     }
 
-    public static void setMeasureMax(View view){   //测量出最大尺寸
+    public static void setMeasureMax(View view) {   //测量出最大尺寸
         view.measure(View.MeasureSpec.makeMeasureSpec(PxTool.dpToPx(1000), View.MeasureSpec.AT_MOST),
-                View.MeasureSpec.makeMeasureSpec(PxTool.dpToPx(1000), View.MeasureSpec.AT_MOST));
+            View.MeasureSpec.makeMeasureSpec(PxTool.dpToPx(1000), View.MeasureSpec.AT_MOST));
     }
 
 

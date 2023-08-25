@@ -13,12 +13,12 @@ import androidx.annotation.Nullable;
  * 弹窗主内容容器，可限制最大宽高
  */
 public class Container extends FrameLayout {
-    private int lastY,mHeight,maxHeight=0,maxWidth;
-    private boolean isScroll=false;
+    private int lastY, mHeight, maxHeight = 0, maxWidth;
+    private boolean isScroll = false;
 
-    public Container(Context context,boolean isScroll) {
+    public Container(Context context, boolean isScroll) {
         super(context);
-        this.isScroll=isScroll;
+        this.isScroll = isScroll;
     }
 
     public Container(Context context, @Nullable AttributeSet attrs) {
@@ -38,15 +38,15 @@ public class Container extends FrameLayout {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (isScroll){
+        if (isScroll) {
             int action = event.getAction();
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
                     lastY = (int) event.getRawY();
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    int dy =  lastY-(int) event.getRawY();
-                    setTranslationY(getTranslationY()-dy<=0?getTranslationY()-dy:0);
+                    int dy = lastY - (int) event.getRawY();
+                    setTranslationY(getTranslationY() - dy <= 0 ? getTranslationY() - dy : 0);
                     lastY = (int) event.getRawY();
                     break;
                 case MotionEvent.ACTION_UP:
@@ -57,22 +57,23 @@ public class Container extends FrameLayout {
         return true;
     }
 
-    private void checkUp(){
-        float tranY=getTranslationY();
-        if (-tranY>(float) mHeight/3f){
-            scroll(getTranslationY(),-mHeight);
-        }else {
-            scroll(getTranslationY(),0);
+    private void checkUp() {
+        float tranY = getTranslationY();
+        if (-tranY > (float) mHeight / 3f) {
+            scroll(getTranslationY(), -mHeight);
+        } else {
+            scroll(getTranslationY(), 0);
         }
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        mHeight=bottom-top;
+        mHeight = bottom - top;
     }
-    public void scroll(float start,float end){
-        ValueAnimator animator=ValueAnimator.ofFloat(start,end);
+
+    public void scroll(float start, float end) {
+        ValueAnimator animator = ValueAnimator.ofFloat(start, end);
         animator.addUpdateListener(animation -> setTranslationY((Float) animator.getAnimatedValue()));
         animator.setDuration(200).start();
     }
@@ -88,25 +89,27 @@ public class Container extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (maxHeight > 0&&getMeasuredHeight()>maxHeight) {
+        if (maxHeight > 0 && getMeasuredHeight() > maxHeight) {
             try {
-                LayoutParams llp= (LayoutParams) getLayoutParams();
-                llp.height=maxHeight;
-                this.post(()->{
+                LayoutParams llp = (LayoutParams) getLayoutParams();
+                llp.height = maxHeight;
+                this.post(() -> {
                     setLayoutParams(llp);
                 });
 
-            }catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
         }
-        if (maxWidth > 0&&getMeasuredWidth()>maxWidth) {
+        if (maxWidth > 0 && getMeasuredWidth() > maxWidth) {
             try {
-                LayoutParams llp= (LayoutParams) getLayoutParams();
-                llp.width=maxWidth;
-                this.post(()->{
+                LayoutParams llp = (LayoutParams) getLayoutParams();
+                llp.width = maxWidth;
+                this.post(() -> {
                     setLayoutParams(llp);
                 });
 
-            }catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
         }
 
     }

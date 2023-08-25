@@ -22,45 +22,42 @@ import com.example.basepop.utils.PxTool;
 
 //中心弹框  中心弹出动画
 public abstract class BasePopCenter extends BasePop<Container> {
-    protected boolean isShow=false,isShowBg=true;
+    protected boolean isShow = false, isShowBg = true;
     //contentAnimate
     float startScale = .75f;
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final boolean isZeroDuration = false;
-    private boolean isConScrollAble=false;
+    private boolean isConScrollAble = false;
 
-
-    public BasePopCenter(Activity activity){
+    public BasePopCenter(Activity activity) {
         super(activity);
     }
 
-
-
-    public void setLayout(int layout){
-        this.layout=layout;
+    public void setLayout(int layout) {
+        this.layout = layout;
     }
 
-    protected void onCreate(){  //加入弹窗
-        super.onCreate();
-        if (!isShowBg){
-            shadowBgColor= R.color.transparent;
+    @Override
+    protected void onCreate() {
+        if (!isShowBg) {
+            shadowBgColor = R.color.transparent;
         }
         //初始高度
-        int maxWidth= getMaxWidth();
+        int maxWidth = getMaxWidth();
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-                ,Gravity.CENTER));
-        mContainer=new Container(activity,isConScrollAble);
-        mContent= LayoutInflater.from(activity).inflate(layout,mContainer,false);
+            , Gravity.CENTER));
+        mContainer = new Container(activity, isConScrollAble);
+        mContent = LayoutInflater.from(activity).inflate(layout, mContainer, false);
         try {
-            FrameLayout.LayoutParams flp=(FrameLayout.LayoutParams) mContent.getLayoutParams();
-            flp.gravity=Gravity.CENTER;
+            FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) mContent.getLayoutParams();
+            flp.gravity = Gravity.CENTER;
             mContainer.setLayoutParams(flp);
-        }catch (Exception ignored){}
-        FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        flp.gravity= Gravity.CENTER;
+        } catch (Exception ignored) {
+        }
+        FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        flp.gravity = Gravity.CENTER;
         mContainer.setLayoutParams(flp);
-        //mContainer.setBackgroundColor(getResources().getColor(R.color.color2866FE));
         mContainer.setMaxHeight(maxHeight);
         mContainer.setMaxWidth(maxWidth);
         mContainer.addView(mContent);
@@ -75,17 +72,17 @@ public abstract class BasePopCenter extends BasePop<Container> {
     }
 
     public void animateShow() {
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onShow();
         }
         mContainer.post(() -> mContainer.animate().scaleX(1f).scaleY(1f).alpha(1f)
-                .setDuration(animationDuration)
-                .setInterpolator(new OvershootInterpolator(1f))
+            .setDuration(animationDuration)
+            .setInterpolator(new OvershootInterpolator(1f))
 //                .withLayer() 在部分6.0系统会引起crash
-                .start());
-        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor,shadowBgColor );
+            .start());
+        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor, shadowBgColor);
         animator.addUpdateListener(animation -> {
-            if (isShowBg){
+            if (isShowBg) {
                 mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
@@ -97,22 +94,22 @@ public abstract class BasePopCenter extends BasePop<Container> {
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
 
     }
 
     public void animateDismiss() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onDismiss();
         }
         mContainer.animate().scaleX(startScale).scaleY(startScale).alpha(0f).setDuration(animationDuration)
-                .setInterpolator(new FastOutSlowInInterpolator())
+            .setInterpolator(new FastOutSlowInInterpolator())
 //                .withLayer() 在部分6.0系统会引起crash
-                .start();
+            .start();
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, startColor);
         animator.addUpdateListener(animation -> {
-            if (isShowBg){
+            if (isShowBg) {
                 mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue());
             }
         });
@@ -123,14 +120,15 @@ public abstract class BasePopCenter extends BasePop<Container> {
                 showState = BasePopConstants.SHOW_STATE_DISMISS;
                 try {
                     mParent.removeView(mBase);
-                }catch (Exception ignored){}
+                } catch (Exception ignored) {
+                }
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
     }
 
-    public <T extends View> T findViewById(int id){
+    public <T extends View> T findViewById(int id) {
         return mContent.findViewById(id);
     }
 
@@ -142,12 +140,12 @@ public abstract class BasePopCenter extends BasePop<Container> {
     }
 
     public BasePopCenter setMaxHeight(int max) {
-        maxHeight=max;
+        maxHeight = max;
         return this;
     }
 
     public BasePopCenter setShowBg(boolean isShowBg) {
-        this.isShowBg=isShowBg;
+        this.isShowBg = isShowBg;
         return this;
     }
 
@@ -156,7 +154,7 @@ public abstract class BasePopCenter extends BasePop<Container> {
         return this;
     }
 
-    protected Resources getResources(){
+    protected Resources getResources() {
         return mBase.getResources();
     }
 
@@ -165,28 +163,32 @@ public abstract class BasePopCenter extends BasePop<Container> {
         return this;
     }
 
-    public boolean isShow(){
+    public boolean isShow() {
         return isShow;
     }
 
-    public void beforeShow(){   //弹窗显示之前执行
-        if (myPopListener !=null){
+    public void beforeShow() {   //弹窗显示之前执行
+        if (myPopListener != null) {
             myPopListener.beforeShow();
         }
         initAnimator();
     }
 
-    public void beforeDismiss(){
-        if (myPopListener !=null){
+    public void beforeDismiss() {
+        if (myPopListener != null) {
             myPopListener.beforeDismiss();
         }
     }
 
     //获取弹窗最大高度
-    protected int getMaxHeight(){return 0;}
-    //获取弹窗最大宽度
-    protected int getMaxWidth(){return (int) (PxTool.getScreenWidth()*0.85);}
+    protected int getMaxHeight() {
+        return 0;
+    }
 
+    //获取弹窗最大宽度
+    protected int getMaxWidth() {
+        return (int) (PxTool.getScreenWidth() * 0.85);
+    }
 
 
 }

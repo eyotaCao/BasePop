@@ -25,74 +25,73 @@ import com.example.basepop.utils.ViewUtils;
 //头部弹框
 public abstract class BasePopTop extends BasePop<Container> {
     protected View attachView;
-    protected boolean isShow=false;
-    protected boolean isMove=false;
+    protected boolean isShow = false;
+    protected boolean isMove = false;
     //contentAnimate
-    private int  oldHeight,maxHeight=0;  //初始高度
+    private int oldHeight, maxHeight = 0;  //初始高度
     //shadowAnimate
     public ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private final boolean isZeroDuration = false;
-    private boolean isConScrollAble=false;
-    private boolean isContentCenter=false;
+    private boolean isConScrollAble = false;
+    private boolean isContentCenter = false;
 
-    public BasePopTop(Activity activity){
+    public BasePopTop(Activity activity) {
         super(activity);
     }
 
 
-    public void setLayout(int layout){
-        this.layout=layout;
+    public void setLayout(int layout) {
+        this.layout = layout;
     }
 
+    @Override
     @SuppressLint("ClickableViewAccessibility")
-    protected void onCreate(){  //加入弹窗
-        super.onCreate();
-
+    protected void onCreate() {  //加入弹窗
         mBase.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mContent= LayoutInflater.from(activity).inflate(layout,mBase,false);
-        mContainer=new Container(activity,isConScrollAble);
-        FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        int hei=0;
-        if (attachView!=null){
-            hei= ViewUtils.getLocation(attachView)[1]+attachView.getMeasuredHeight();
+        mContent = LayoutInflater.from(activity).inflate(layout, mBase, false);
+        mContainer = new Container(activity, isConScrollAble);
+        FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int hei = 0;
+        if (attachView != null) {
+            hei = ViewUtils.getLocation(attachView)[1] + attachView.getMeasuredHeight();
         }
-        flp.topMargin=hei;
+        flp.topMargin = hei;
         mContainer.setLayoutParams(flp);
         mContainer.setMaxHeight(maxHeight);
-        if (isContentCenter){
+        if (isContentCenter) {
             mContent.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
-                    Gravity.CENTER_HORIZONTAL));
+                Gravity.CENTER_HORIZONTAL));
         }
         mContainer.addView(mContent);
         mBase.addView(mContainer);
     }
 
     public void initAnimator() {
-        oldHeight=ViewUtils.getMaxHeight(mContainer);
+        oldHeight = ViewUtils.getMaxHeight(mContainer);
         mContent.setTranslationY(-oldHeight);
-        if (isMove){
-            FrameLayout.LayoutParams flp=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int hei=0;
-            if (attachView!=null){
-                hei=ViewUtils.getLocation(attachView)[1]+attachView.getMeasuredHeight();
+        if (isMove) {
+            FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            int hei = 0;
+            if (attachView != null) {
+                hei = ViewUtils.getLocation(attachView)[1] + attachView.getMeasuredHeight();
             }
-            flp.topMargin=hei;
+            flp.topMargin = hei;
             mContainer.setLayoutParams(flp);
         }
     }
 
     public void animateShow() {
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onShow();
         }
         ViewPropertyAnimator animator2;
         animator2 = mContent.animate().translationY(0);
-        if(animator2!=null)animator2.setInterpolator(new FastOutSlowInInterpolator())
-                .setDuration(animationDuration)
-              //  .withLayer()
-                .start();
+        if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
+            .setDuration(animationDuration)
+            //  .withLayer()
+            .start();
 
-        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor,shadowBgColor );
+        ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, startColor, shadowBgColor);
         animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -102,21 +101,23 @@ public abstract class BasePopTop extends BasePop<Container> {
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
     }
 
     public void animateDismiss() {
 
-        if (myPopListener !=null){
+        if (myPopListener != null) {
             myPopListener.onDismiss();
         }
-        if (mContent==null){return;}
+        if (mContent == null) {
+            return;
+        }
         ViewPropertyAnimator animator2;
         animator2 = mContent.animate().translationY(-oldHeight);
-        if(animator2!=null)animator2.setInterpolator(new FastOutSlowInInterpolator())
-                .setDuration(animationDuration)
-                .withLayer()
-                .start();
+        if (animator2 != null) animator2.setInterpolator(new FastOutSlowInInterpolator())
+            .setDuration(animationDuration)
+            .withLayer()
+            .start();
 
         ValueAnimator animator = ValueAnimator.ofObject(argbEvaluator, shadowBgColor, startColor);
         animator.addUpdateListener(animation -> mBaseView.setBackgroundColor((Integer) animation.getAnimatedValue()));
@@ -129,15 +130,15 @@ public abstract class BasePopTop extends BasePop<Container> {
             }
         });
         animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.setDuration(isZeroDuration?0:animationDuration).start();
+        animator.setDuration(isZeroDuration ? 0 : animationDuration).start();
     }
 
-    public <T extends View> T findViewById(int id){
+    public <T extends View> T findViewById(int id) {
         return mContent.findViewById(id);
     }
 
-    public BasePopTop atView(View view){
-        attachView=view;
+    public BasePopTop atView(View view) {
+        attachView = view;
         return this;
     }
 
@@ -149,15 +150,15 @@ public abstract class BasePopTop extends BasePop<Container> {
 
     public BasePopTop setMove(boolean move) {
         isMove = move;
-        return  this;
-    }
-
-    public BasePopTop setMaxHeight(int max) {
-        maxHeight=max;
         return this;
     }
 
-    protected Resources getResources(){
+    public BasePopTop setMaxHeight(int max) {
+        maxHeight = max;
+        return this;
+    }
+
+    protected Resources getResources() {
         return mBase.getResources();
     }
 
@@ -168,31 +169,32 @@ public abstract class BasePopTop extends BasePop<Container> {
 
     public BasePopTop setContentCenter(boolean contentCenter) {
         isContentCenter = contentCenter;
-        return  this;
+        return this;
     }
 
-    public boolean isShow(){
+    public boolean isShow() {
         return isShow;
     }
 
-    public void beforeShow(){   //弹窗显示之前执行
-        if (myPopListener !=null){
+    public void beforeShow() {   //弹窗显示之前执行
+        if (myPopListener != null) {
             myPopListener.beforeShow();
         }
         initAnimator();
     }
 
-    public void beforeDismiss(){
-        if (myPopListener !=null){
+    public void beforeDismiss() {
+        if (myPopListener != null) {
             myPopListener.beforeDismiss();
         }
     }
 
 
-    public void setFocus(){  //打开子窗口失去焦点需要重新获取
+    public void setFocus() {  //打开子窗口失去焦点需要重新获取
         try {
             mBase.init();
-        }catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
     }
 
 
